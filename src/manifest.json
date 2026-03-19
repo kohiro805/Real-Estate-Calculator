@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "不動産電卓",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "不動産投資の収益計算を素早く行うための電卓アプリです。",
   "action": {
     "default_popup": "popup.html",
