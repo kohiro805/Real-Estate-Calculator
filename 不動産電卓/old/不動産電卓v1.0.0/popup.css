@@ -1,0 +1,866 @@
+:root {
+  --bg-color: #1c1c1e;
+  --bg-grad: #1c1c1e;
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-strong: rgba(255, 255, 255, 0.14);
+  --key: #3a3a3c;
+  --key-func: #9f9f9f;
+  --key-operator: linear-gradient(180deg, #ffb347, #ff9500);
+  --key-operator-text: #fff;
+  --text: #fff;
+  --text-dim: #d0d0d0;
+  --accent: #ff9500;
+  --shadow: rgba(0, 0, 0, 0.65);
+  --glow: rgba(255, 255, 255, 0.1);
+  --radius: 18px;
+  --font: "SF Pro Rounded", "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Light mode: change only background color, nothing else */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #f2f2f7;
+    --bg-grad: #f2f2f7;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Hide spin buttons (up/down arrows) from numerical inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+body {
+  margin: 0;
+  min-width: 280px;
+  width: 340px; /* Default width */
+  font-family: var(--font);
+  background: var(--bg-grad);
+  color: var(--text);
+  position: relative;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+body[data-mode="revenue"] {
+  width: 800px;
+  height: 595px;
+}
+
+body[data-mode="valuation"] {
+  width: 540px;
+  height: 595px;
+}
+
+
+
+.calculator {
+  display: grid;
+  gap: 8px; 
+  padding: 6px 14px 12px; 
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px 2px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+body[data-mode="revenue"] .mode-toggle {
+  padding-right: 18px; /* 14px + 4px scrollbar compensation */
+}
+
+.mode-toggle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.25), rgba(255,255,255,0));
+  opacity: 0.35;
+}
+.mode-btn {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 140ms ease;
+}
+
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.loan-panel {
+  display: none;
+  gap: 12px;
+  padding: 0 14px 10px; /* Reduced bottom padding */
+  position: relative;
+  overflow: hidden;
+}
+
+.loan-tabs {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+  margin-bottom: 8px;
+}
+
+.loan-tab {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 7px 9px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 140ms ease;
+}
+
+.loan-tab.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.loan-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.08), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 160ms ease;
+}
+
+.loan-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  align-items: center;
+}
+
+.loan-row label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.loan-row input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-size: 1rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border 140ms ease, background 140ms ease;
+}
+
+.loan-row input:focus {
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.loan-output {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loan-section {
+  display: none; /* Hide all sub-tabs by default */
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loan-section-title {
+  font-size: 0.95rem;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+[data-loan-submode="payment"] .loan-section[data-loan-tab-content="payment"],
+[data-loan-submode="borrow"] .loan-section[data-loan-tab-content="borrow"],
+[data-loan-submode="period"] .loan-section[data-loan-tab-content="period"] {
+  display: grid;
+}
+
+.loan-output div {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.revenue-panel {
+  display: none;
+  grid-template-rows: 1fr;
+  padding: 0 14px 10px;
+  position: relative;
+  overflow: hidden;
+  height: 530px; /* Fits with toggle in 595px total height */
+}
+
+body[data-mode="revenue"] .revenue-panel {
+  padding-right: 18px; /* Alignment with mode-toggle */
+}
+
+.revenue-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.08), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 160ms ease;
+  z-index: 100;
+}
+
+.revenue-scroll-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 3-column layout */
+  gap: 12px;
+  overflow-y: auto; 
+  height: 100%;
+  padding-top: 4px;
+}
+
+.revenue-column {
+  display: grid;
+  grid-template-rows: 0.45fr 0.55fr; /* 0.45 : 0.55 ratio per user request */
+  gap: 6px;
+  /* Removed height: 100% to prevent them from stretching to the full window height */
+}
+
+/* The 3rd column (Investment Metrics) should not use the split ratio, it takes 1 full height */
+.revenue-column:nth-child(3) {
+  grid-template-rows: 1fr;
+}
+
+/* Flex override removed */
+
+.revenue-scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+.revenue-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.revenue-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.revenue-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden; /* Added to keep 1:1 ratio */
+}
+
+.revenue-group-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.loan-row {
+  flex-shrink: 0;
+}
+
+.auto-calc-group {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px dashed rgba(255, 255, 255, 0.15); 
+  border-radius: 12px;
+  overflow: hidden; /* Added to keep 1:1 ratio */
+}
+
+/* Distribute extra vertical space evenly across rows in the automatic calculation groups */
+.revenue-column > .revenue-group:last-child {
+  justify-content: space-between;
+}
+
+.auto-value {
+  text-align: right;
+  padding: 8px 10px;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  font-family: var(--font);
+  font-weight: 500;
+}
+
+.revenue-results {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 6px 10px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+  overflow: hidden; /* Added to keep 1:1 ratio */
+}
+
+.rev-res-grid {
+  flex: 1; /* Fill available height */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr; /* All rows take equal space */
+  gap: 8px; /* Restored wider gap for better visual balance */
+  margin-top: 4px;
+}
+
+.rev-res-item.full-width {
+  grid-column: span 2;
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 10px;
+}
+
+.rev-res-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px; /* Reduced from 4px to save vertical space */
+  padding: 4px 8px; /* Further reduced from 6px 10px to eliminate strict vertical overflow */
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.rev-res-item span {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  margin-bottom: 0px; /* Removed margin-bottom to save space */
+}
+
+.rev-res-item strong {
+  font-size: 1.05rem; /* Slightly reduced from 1.1rem to fit tighter padding */
+  color: #fff;
+  font-weight: 600;
+}
+
+.rev-res-item strong.blue-highlight {
+  color: #0a84ff; /* Restored to blue */
+  font-size: 1.25rem; /* Slightly larger for emphasis */
+}
+
+.rev-res-item strong.red-highlight {
+  color: #ff453a; /* Restored to red */
+  font-size: 1.25rem;
+}
+
+[data-mode="normal"] .loan-panel, [data-mode="normal"] .revenue-panel { display: none; }
+[data-mode="loan"] .loan-panel { display: grid; }
+[data-mode="loan"] .calculator, [data-mode="loan"] .revenue-panel { display: none; }
+[data-mode="revenue"] .revenue-panel { display: grid; }
+[data-mode="revenue"] .calculator, [data-mode="revenue"] .loan-panel, [data-mode="revenue"] .valuation-panel { display: none; }
+
+.valuation-panel {
+  display: none;
+  grid-template-rows: auto 1fr;
+  padding: 0 14px 10px;
+  position: relative;
+  overflow: hidden;
+  height: 530px;
+}
+
+.valuation-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.08), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 160ms ease;
+  z-index: 100;
+}
+
+[data-mode="valuation"] .valuation-panel { display: grid; }
+[data-mode="valuation"] .calculator, [data-mode="valuation"] .loan-panel, [data-mode="valuation"] .revenue-panel { display: none; }
+
+.valuation-tab {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 7px 9px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 140ms ease;
+}
+
+.valuation-tab.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.valuation-select {
+  width: 100%;
+  padding: 8px 10px; /* Reduced padding for tighter feel */
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: #fff; /* Ensure select text is white */
+  font-size: 1.05rem; /* Increased from 0.95rem */
+  font-family: var(--font);
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  outline: none;
+}
+
+.valuation-select:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.valuation-select option {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.valuation-calc-grid {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+/* Left and right columns in Valuation use flex to handle variable height differences safely */
+.valuation-calc-grid .revenue-column,
+.valuation-settings-grid .revenue-column,
+.valuation-results-grid .revenue-column {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100%;
+  justify-content: space-between; /* Ensures the bottom boxes perfectly align horizontally between the columns */
+}
+
+/* Force the Valuation Results box to stretch and fill the taller right column */
+.valuation-calc-grid .revenue-column:last-child .revenue-results {
+  flex: 1; /* Match the height of the left column */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Force the 4 valuation result items to divide the stretched space equally */
+.valuation-calc-grid .revenue-column:last-child .revenue-results .rev-res-grid {
+  flex: 1; /* Fill the results box */
+  grid-auto-rows: 1fr; /* Space exactly equally */
+  gap: 6px;
+}
+
+.valuation-settings-grid {
+  grid-template-columns: 1fr !important;
+}
+
+.valuation-results-grid {
+  grid-template-columns: 1fr !important;
+}
+
+.calculator::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.08), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 160ms ease;
+}
+
+.display {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px 10px 4px;
+  margin: 0 4px 6px;
+  text-align: right;
+  min-height: 100px;
+  max-height: 140px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.constant-indicator {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ff9500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+  z-index: 5;
+}
+
+.constant-indicator.active {
+  opacity: 1;
+}
+
+.expression {
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 42px;
+  color: var(--text-dim);
+  line-height: 1.25;
+  margin-top: auto;
+  min-height: 0;
+}
+
+.result {
+  width: 100%;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  font-size: 52px;
+  min-height: 0;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+.tall {
+  grid-row: span 2;
+}
+
+.btn {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 0;
+  aspect-ratio: 1/1;
+  font-size: 1.4rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  min-height: 52px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.96);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn[data-action="clear"],
+.btn[data-action="delete"] {
+  background: rgba(160, 160, 160, 0.15);
+}
+
+.btn[data-action="clear"]:hover,
+.btn[data-action="delete"]:hover {
+  background: rgba(160, 160, 160, 0.25);
+}
+
+.btn[data-value="/"],
+.btn[data-value="*"],
+.btn[data-value="-"],
+.btn[data-value="+"],
+.btn[data-action="equals"] {
+  background: rgba(255, 149, 0, 0.2);
+  border-color: rgba(255, 149, 0, 0.3);
+  color: #ff9d0a;
+}
+
+.btn[data-value="/"]:hover,
+.btn[data-value="*"]:hover,
+.btn[data-value="-"]:hover,
+.btn[data-value="+"]:hover,
+.btn[data-action="equals"]:hover {
+  background: rgba(255, 149, 0, 0.3);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+.glass-panel {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.valuation-panel input, 
+.valuation-panel select {
+  font-size: 1.05rem !important;
+  color: #fff !important;
+}
+
+.valuation-panel input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== LIGHT MODE: Precise macOS System UI Matching ===== */
+/*
+  Based on user screenshot:
+  - Base background: Pure White (#FFFFFF)
+  - Unselected panels/buttons: Light Gray (approx #F2F2F7 / rgba(0,0,0,0.05))
+  - Selected/Active items: Darker Gray (approx #E5E5EA / rgba(0,0,0,0.1))
+  - Preserves translucent glassmorphism for liquid hover effects.
+*/
+@media (prefers-color-scheme: light) {
+
+  /* Base macOS Light Mode background - Pure White */
+  body {
+    background: #ffffff;
+  }
+
+  /* Liquid Glass Cursor Glow: Subtle dark shadow in light mode */
+  .revenue-panel::before,
+  .loan-panel::before,
+  .calculator::before,
+  .valuation-panel::before {
+    background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(0, 0, 0, 0.06), transparent 60%);
+  }
+
+  /* Nav / Tab buttons - Light gray unselected */
+  .mode-btn,
+  .loan-tab,
+  .valuation-tab {
+    background: rgba(0, 0, 0, 0.04); /* Light gray */
+    border-color: rgba(0, 0, 0, 0.08); /* Very subtle border */
+    color: #1c1c1e;
+  }
+
+  /* Selected Tabs - Darker gray to match screenshot */
+  .mode-btn.active,
+  .loan-tab.active,
+  .valuation-tab.active {
+    background: rgba(0, 0, 0, 0.12); /* Darker gray selected state */
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #1c1c1e;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04); /* Slight inset for pressed look */
+  }
+
+  /* Divider line in mode-toggle */
+  .mode-toggle::after {
+    background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,0.08), rgba(0,0,0,0));
+    opacity: 1;
+  }
+
+  /* Input fields - Light gray background */
+  .loan-row input,
+  .valuation-select {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #1c1c1e !important;
+    box-shadow: none;
+  }
+
+  .loan-row input:focus {
+    border-color: rgba(0, 0, 0, 0.30);
+    background: rgba(0, 0, 0, 0.08); /* Slightly darker on focus */
+  }
+
+  .valuation-select option {
+    background-color: #ffffff;
+    color: #1c1c1e;
+  }
+
+  /* Labels */
+  .loan-row label, .revenue-group-title, .auto-value, .rev-res-item span {
+    color: #636366; /* Secondary text */
+  }
+
+  /* Output / section panels & Revenue groups - Light Gray */
+  .loan-output,
+  .loan-section,
+  .revenue-group,
+  .revenue-results {
+    background: rgba(0, 0, 0, 0.03); /* Very light gray panels on white background */
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: none; /* Flatter look matching screenshot */
+  }
+
+  /* Calculator Display */
+  .display {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+  }
+
+  /* Minor inner panels */
+  .auto-calc-group {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  /* Result items (inset boxes) */
+  .rev-res-item {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .rev-res-item.full-width {
+    background: rgba(0, 0, 0, 0.06);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .rev-res-item strong, .loan-output div, .loan-section-title {
+    color: #1c1c1e !important;
+  }
+
+  .result {
+    color: #000000 !important;
+  }
+
+  /* Highlighted values */
+  .rev-res-item strong.blue-highlight {
+    color: #007aff !important;
+  }
+  .rev-res-item strong.red-highlight {
+    color: #ff3b30 !important;
+  }
+  .expression {
+    color: #8e8e93;
+  }
+
+  /* Calculator buttons - Light gray base, darker on hover/active */
+  .btn {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #1c1c1e;
+    box-shadow: none;
+  }
+
+  .btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:active {
+    background: rgba(0, 0, 0, 0.12);
+  }
+
+  .btn[data-action="clear"],
+  .btn[data-action="delete"] {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .btn[data-action="clear"]:hover,
+  .btn[data-action="delete"]:hover {
+    background: rgba(0, 0, 0, 0.12);
+  }
+
+  /* Valuation panel inputs */
+  .valuation-panel input,
+  .valuation-panel select {
+    color: #1c1c1e !important;
+  }
+
+  .valuation-panel input::placeholder {
+    color: rgba(0, 0, 0, 0.3);
+  }
+
+  /* Scrollbar */
+  .revenue-scroll-area::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+  }
+}
+

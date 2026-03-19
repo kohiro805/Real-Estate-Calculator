@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>Calculator</title>
+</head>
+
+<body data-mode="normal" data-loan-submode="payment">
+  <div class="mode-toggle" aria-label="Mode switch">
+    <button class="mode-btn active" data-mode="normal">電卓</button>
+    <button class="mode-btn" data-mode="loan">ローン</button>
+    <button class="mode-btn" data-mode="revenue">収益</button>
+    <button class="mode-btn" data-mode="valuation">積算</button>
+  </div>
+
+  <section class="loan-panel" aria-live="polite">
+    <div class="loan-tabs">
+      <button class="loan-tab active" data-loan-tab="payment">返済額</button>
+      <button class="loan-tab" data-loan-tab="borrow">借入可能額</button>
+      <button class="loan-tab" data-loan-tab="period">返済期間</button>
+    </div>
+    <div class="loan-section" data-loan-tab-content="payment">
+      <div class="loan-section-title">返済額計算（元利均等）</div>
+      <div class="loan-row">
+        <label>借入額</label>
+        <input type="number" id="loanAmount" inputmode="decimal" placeholder="50000000" />
+      </div>
+      <div class="loan-row">
+        <label>金利（%）</label>
+        <input type="number" id="interestRate" inputmode="decimal" step="0.01" placeholder="1.5" />
+      </div>
+      <div class="loan-row">
+        <label>期間（年）</label>
+        <input type="number" id="loanTerm" inputmode="numeric" placeholder="35" />
+      </div>
+      <div class="loan-output">
+        <div><span>月額返済</span><strong id="outMonthlyPayment">-</strong></div>
+      </div>
+    </div>
+
+    <div class="loan-section" data-loan-tab-content="borrow">
+      <div class="loan-section-title">借入可能額計算</div>
+      <div class="loan-row">
+        <label>毎月返済可能額</label>
+        <input type="number" id="monthlyBudget" inputmode="decimal" placeholder="100000" />
+      </div>
+      <div class="loan-row">
+        <label>金利（%）</label>
+        <input type="number" id="interestRate2" inputmode="decimal" step="0.01" placeholder="1.5" />
+      </div>
+      <div class="loan-row">
+        <label>期間（年）</label>
+        <input type="number" id="loanTerm2" inputmode="numeric" placeholder="35" />
+      </div>
+      <div class="loan-output">
+        <div><span>借入可能額</span><strong id="outLoanPossible">-</strong></div>
+      </div>
+    </div>
+
+    <div class="loan-section" data-loan-tab-content="period">
+      <div class="loan-section-title">返済期間計算</div>
+      <div class="loan-row">
+        <label>借入額</label>
+        <input type="number" id="periodLoanAmount" inputmode="decimal" placeholder="50000000" />
+      </div>
+      <div class="loan-row">
+        <label>金利（%）</label>
+        <input type="number" id="periodInterestRate" inputmode="decimal" step="0.01" placeholder="1.5" />
+      </div>
+      <div class="loan-row">
+        <label>毎月の返済額</label>
+        <input type="number" id="periodMonthlyPayment" inputmode="decimal" placeholder="150000" />
+      </div>
+      <div class="loan-output">
+        <div><span>返済期間</span><strong id="outPeriodResult">-</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="revenue-panel" aria-live="polite">
+    <div class="revenue-scroll-area">
+      <!-- Column 1: Investment Conditions -->
+      <div class="revenue-column">
+        <div class="revenue-group">
+          <div class="revenue-group-title">取得条件 (入力)</div>
+          <div class="loan-row">
+            <label>取得価格</label>
+            <input type="number" id="propPrice" inputmode="decimal" placeholder="50000000" />
+          </div>
+          <div class="loan-row">
+            <label>自己資金</label>
+            <input type="number" id="propDownPayment" inputmode="decimal" placeholder="5000000" />
+          </div>
+          <div class="loan-row">
+            <label>借入金利（%）</label>
+            <input type="number" id="propInterest" inputmode="decimal" step="0.01" placeholder="1.5" />
+          </div>
+          <div class="loan-row">
+            <label>借入期間（年）</label>
+            <input type="number" id="propTerm" inputmode="numeric" placeholder="35" />
+          </div>
+        </div>
+
+        <div class="revenue-group auto-calc-group">
+          <div class="revenue-group-title">取得コスト (自動)</div>
+          <div class="loan-row">
+            <label>取得諸費用</label>
+            <div class="auto-value" id="outPropExpenses">-</div>
+          </div>
+          <div class="loan-row">
+            <label>取得総額</label>
+            <div class="auto-value" id="outTotalCost">-</div>
+          </div>
+          <div class="loan-row">
+            <label>借入金額</label>
+            <div class="auto-value" id="outPropLoanAmount">-</div>
+          </div>
+          <div class="loan-row">
+            <label>月次返済額</label>
+            <div class="auto-value" id="outPropMonthlyPay">-</div>
+          </div>
+          <div class="loan-row">
+            <label>年次返済額</label>
+            <div class="auto-value" id="outPropAnnualPay">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2: Earnings Conditions -->
+      <div class="revenue-column">
+        <div class="revenue-group">
+          <div class="revenue-group-title">運営条件 (入力)</div>
+          <div class="loan-row">
+            <label>満室年次賃料</label>
+            <input type="number" id="propAnnualRentFull" inputmode="decimal" placeholder="3750000" />
+          </div>
+          <div class="loan-row">
+            <label>想定稼働率（%）</label>
+            <input type="number" id="propOccupancy" inputmode="decimal" placeholder="90" />
+          </div>
+          <div class="loan-row">
+            <label>運営費率（%）</label>
+            <input type="number" id="propExpRatio" inputmode="decimal" placeholder="20" />
+          </div>
+          <div class="loan-row">
+            <label>売却利回り（%）</label>
+            <input type="number" id="propExpectedYield" inputmode="decimal" step="0.01" placeholder="7" />
+          </div>
+        </div>
+
+        <div class="revenue-group auto-calc-group">
+          <div class="revenue-group-title">運営収支 (自動)</div>
+          <div class="loan-row">
+            <label>想定月次賃料</label>
+            <div class="auto-value" id="outPropMonthlyRentEst">-</div>
+          </div>
+          <div class="loan-row">
+            <label>想定年次賃料</label>
+            <div class="auto-value" id="outPropAnnualRentEst">-</div>
+          </div>
+          <div class="loan-row">
+            <label>年次運営費</label>
+            <div class="auto-value" id="outAnnualOpex">-</div>
+          </div>
+          <div class="loan-row">
+            <label>営業純利益</label>
+            <div class="auto-value" id="outPropNOI">-</div>
+          </div>
+          <div class="loan-row">
+            <label>想定売却額</label>
+            <div class="auto-value" id="outPropSalePrice">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 3: Investment Metrics -->
+      <div class="revenue-column">
+        <div class="revenue-results">
+          <div class="revenue-group-title">収益指標</div>
+          <div class="rev-res-grid">
+            <div class="rev-res-item full-width">
+              <span>年次キャッシュフロー</span>
+              <strong id="outCF" class="blue-highlight">-</strong>
+            </div>
+            <div class="rev-res-item full-width">
+              <span>月次キャッシュフロー</span>
+              <strong id="outMonthlyCF" class="blue-highlight">-</strong>
+            </div>
+            <div class="rev-res-item full-width">
+              <span>想定売却益</span>
+              <strong id="outPropSaleProfit" class="blue-highlight">-</strong>
+            </div>
+
+            <div class="rev-res-item">
+              <span>表面利回り</span>
+              <strong id="outGrossYield">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>実質利回り</span>
+              <strong id="outNOIYield">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>イールドギャップ</span>
+              <strong id="outYieldGap">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>債務回収比率</span>
+              <strong id="outDSCR">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>返済比率</span>
+              <strong id="outDSR">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>借入金比率</span>
+              <strong id="outKPercent">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>自己資本利益率</span>
+              <strong id="outROE">-</strong>
+            </div>
+            <div class="rev-res-item">
+              <span>投資利益率</span>
+              <strong id="outROI">-</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="valuation-panel" aria-live="polite">
+    <div class="loan-tabs">
+      <button class="valuation-tab active" data-valuation-tab="calc">評価計算</button>
+      <button class="valuation-tab" data-valuation-tab="settings">基本情報設定</button>
+    </div>
+
+    <!-- Valuation Calculation Tab -->
+    <div class="valuation-section" data-valuation-tab-content="calc">
+      <div class="revenue-scroll-area valuation-calc-grid">
+        <div class="revenue-column">
+          <div class="revenue-group">
+            <div class="revenue-group-title">物件概況</div>
+            <div class="loan-row">
+              <label>物件価格</label>
+              <input type="number" id="valPropPrice" inputmode="decimal" placeholder="50000000" />
+            </div>
+          </div>
+          <div class="revenue-group">
+            <div class="revenue-group-title">土地情報</div>
+            <div class="loan-row">
+              <label>相続税路線価</label>
+              <input type="number" id="valRoadsideValue" inputmode="decimal" placeholder="100000" />
+            </div>
+            <div class="loan-row">
+              <label>土地面積（㎡）</label>
+              <input type="number" id="valLandArea" inputmode="decimal" placeholder="100" />
+            </div>
+            <div class="loan-row">
+              <label>地形補正率（%）</label>
+              <input type="number" id="valLandCorrection" inputmode="decimal" placeholder="100" />
+            </div>
+          </div>
+          <div class="revenue-group">
+            <div class="revenue-group-title">建物情報</div>
+            <div class="loan-row">
+              <label>建物構造</label>
+              <select id="valStructure" class="valuation-select">
+                <option value="wood">木造</option>
+                <option value="steel">鉄骨造</option>
+                <option value="rc">RC造</option>
+              </select>
+            </div>
+            <div class="loan-row">
+              <label>延べ床面積（㎡）</label>
+              <input type="number" id="valFloorArea" inputmode="decimal" placeholder="100" />
+            </div>
+            <div class="loan-row">
+              <label>築年数（年）</label>
+              <input type="number" id="valBuildingAge" inputmode="numeric" placeholder="10" />
+            </div>
+          </div>
+        </div>
+
+        <div class="revenue-column">
+          <div class="revenue-results">
+            <div class="revenue-group-title">評価結果</div>
+            <div class="rev-res-grid valuation-results-grid">
+              <div class="rev-res-item full-width">
+                <span>土地評価額</span>
+                <strong id="outValLand">-</strong>
+              </div>
+              <div class="rev-res-item full-width">
+                <span>建物評価額</span>
+                <strong id="outValBuilding">-</strong>
+              </div>
+              <div class="rev-res-item full-width">
+                <span>合計評価額</span>
+                <strong id="outValTotal">-</strong>
+              </div>
+              <div class="rev-res-item full-width">
+                <span>積算比率</span>
+                <strong id="outValRatio">-</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Valuation Settings Tab -->
+    <div class="valuation-section" data-valuation-tab-content="settings" style="display:none;">
+      <div class="revenue-scroll-area valuation-settings-grid">
+        <div class="revenue-column">
+          <div class="revenue-group">
+            <div class="revenue-group-title">木造 設定</div>
+            <div class="loan-row">
+              <label>耐用年数（年）</label>
+              <input type="number" id="settingsLifeWood" inputmode="numeric" value="22" />
+            </div>
+            <div class="loan-row">
+              <label>再調達価格（円/㎡）</label>
+              <input type="number" id="settingsPriceWood" inputmode="decimal" value="150000" />
+            </div>
+          </div>
+          <div class="revenue-group">
+            <div class="revenue-group-title">鉄骨造 設定</div>
+            <div class="loan-row">
+              <label>耐用年数（年）</label>
+              <input type="number" id="settingsLifeSteel" inputmode="numeric" value="34" />
+            </div>
+            <div class="loan-row">
+              <label>再調達価格（円/㎡）</label>
+              <input type="number" id="settingsPriceSteel" inputmode="decimal" value="180000" />
+            </div>
+          </div>
+          <div class="revenue-group">
+            <div class="revenue-group-title">RC造 設定</div>
+            <div class="loan-row">
+              <label>耐用年数（年）</label>
+              <input type="number" id="settingsLifeRC" inputmode="numeric" value="47" />
+            </div>
+            <div class="loan-row">
+              <label>再調達価格（円/㎡）</label>
+              <input type="number" id="settingsPriceRC" inputmode="decimal" value="242000" />
+            </div>
+          </div>
+          <!-- Spacer to prevent the last group from stretching disproportionately -->
+          <div style="flex: 10;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="calculator">
+    <div class="display glass-panel" id="display" aria-live="polite">
+      <div id="constant-indicator" class="constant-indicator">K</div>
+      <div class="expression" id="expression"></div>
+      <div class="result" id="result">0</div>
+    </div>
+    <div class="buttons" role="grid">
+      <button class="btn" data-action="clear">AC</button>
+      <button class="btn" data-action="delete">⌫</button>
+      <button class="btn" data-action="percent">%</button>
+      <button class="btn" data-value="/">÷</button>
+
+      <button class="btn" data-value="7">7</button>
+      <button class="btn" data-value="8">8</button>
+      <button class="btn" data-value="9">9</button>
+      <button class="btn" data-value="*">×</button>
+
+      <button class="btn" data-value="4">4</button>
+      <button class="btn" data-value="5">5</button>
+      <button class="btn" data-value="6">6</button>
+      <button class="btn" data-value="-">−</button>
+
+      <button class="btn" data-value="1">1</button>
+      <button class="btn" data-value="2">2</button>
+      <button class="btn" data-value="3">3</button>
+      <button class="btn" data-value="+">+</button>
+
+      <button class="btn" data-action="toggle-sign">±</button>
+      <button class="btn" data-value="0">0</button>
+      <button class="btn" data-value=".">.</button>
+      <button class="btn" data-action="equals">=</button>
+    </div>
+  </main>
+  <script src="popup.js"></script>
+</body>
+
+</html>

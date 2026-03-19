@@ -1,0 +1,668 @@
+/* =============================
+   CSS Variables (Dark Mode Base)
+   ============================= */
+:root {
+  --bg-color: #1c1c1e;
+  --bg-grad: #1c1c1e;
+  --glass: #2C2C2E;
+  --glass-strong: rgba(255, 255, 255, 0.14);
+  --border: #38383A;
+  --key: #3a3a3c;
+  --key-func: #9f9f9f;
+  --key-operator: linear-gradient(180deg, #ffb347, #ff9500);
+  --key-operator-text: #fff;
+  --text: #fff;
+  --text-dim: #d0d0d0;
+  --accent: #ff9500;
+  --shadow: rgba(0, 0, 0, 0.65);
+  --glow: rgba(255, 255, 255, 0.1);
+  --radius: 18px;
+  --font: "Inter", "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --nav-height: 60px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #f2f2f7;
+    --bg-grad: #f2f2f7;
+  }
+}
+
+/* ========== Reset ========== */
+*, *::before, *::after { box-sizing: border-box; }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font);
+  background: var(--bg-grad);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* =============================
+   Top Navigation Bar
+   ============================= */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 20px;
+  height: var(--nav-height);
+  background: rgba(28, 28, 30, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ff9500, #ff375f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex-shrink: 0;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-btn {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font);
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 140ms ease;
+}
+
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* =============================
+   Main Content Area
+   ============================= */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 32px;
+  width: 100%;
+}
+
+/* =============================
+   Panel Show/Hide
+   ============================= */
+.calculator,
+.loan-panel,
+.revenue-panel,
+.valuation-panel {
+  display: none;
+  width: 100%;
+}
+
+body[data-mode="normal"] .calculator { display: grid; }
+body[data-mode="loan"] .loan-panel { display: block; }
+body[data-mode="revenue"] .revenue-panel { display: grid; }
+body[data-mode="valuation"] .valuation-panel { display: grid; }
+
+/* =============================
+   Calculator
+   ============================= */
+.calculator {
+  max-width: 380px;
+  gap: 8px;
+  padding: 6px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+}
+
+.display {
+  position: relative;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 16px 18px 12px;
+  overflow: hidden;
+}
+
+.constant-indicator {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 200ms ease;
+  letter-spacing: 0.1em;
+}
+.constant-indicator.active { opacity: 1; }
+
+.expression {
+  font-size: 24px;
+  color: var(--text-dim);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.result {
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--text);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.btn {
+  height: 72px;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.3rem;
+  font-family: var(--font);
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 100ms ease;
+  user-select: none;
+  background: var(--key);
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 80ms ease;
+}
+.btn:active::before { background: rgba(255,255,255,0.15); }
+.btn:active { transform: scale(0.94); }
+
+.btn[data-action="clear"],
+.btn[data-action="delete"],
+.btn[data-action="percent"],
+.btn[data-action="toggle-sign"] {
+  background: var(--key-func);
+  color: #000;
+}
+
+.btn[data-value="/"],
+.btn[data-value="*"],
+.btn[data-value="-"],
+.btn[data-value="+"],
+.btn[data-action="equals"] {
+  background: var(--key-operator);
+  color: var(--key-operator-text);
+}
+
+.calculator::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.08), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+}
+
+/* =============================
+   Loan Panel
+   ============================= */
+.loan-panel {
+  max-width: 440px;
+  gap: 12px;
+  position: relative;
+}
+
+.loan-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(140px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.08), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+}
+
+.loan-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.loan-tab {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 7px 9px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--font);
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 140ms ease;
+}
+
+.loan-tab.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.loan-section {
+  display: none;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loan-section-title {
+  font-size: 0.95rem;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+[data-loan-submode="payment"] .loan-section[data-loan-tab-content="payment"],
+[data-loan-submode="borrow"] .loan-section[data-loan-tab-content="borrow"],
+[data-loan-submode="period"] .loan-section[data-loan-tab-content="period"] {
+  display: grid;
+}
+
+.loan-output div {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.loan-output strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* =============================
+   Loan Row (shared across panels)
+   ============================= */
+.loan-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.loan-row label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  position: relative;
+  top: 4px;
+}
+
+.loan-row input,
+.loan-row .auto-value {
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-family: var(--font);
+  outline: none;
+  width: 100%;
+  transition: border-color 120ms ease;
+}
+
+.loan-row input:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.auto-value {
+  text-align: right;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* =============================
+   Revenue Panel
+   ============================= */
+.revenue-panel,
+.valuation-panel {
+  max-width: 1200px;
+  position: relative;
+}
+
+.revenue-panel::before,
+.valuation-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(200px at var(--cursor-x, 50%) var(--cursor-y, 50%), rgba(255, 255, 255, 0.05), transparent 60%);
+  opacity: var(--cursor-active, 0);
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+  border-radius: 16px;
+}
+
+.revenue-scroll-area {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.revenue-column {
+  display: grid;
+  grid-template-rows: 0.45fr 0.55fr;
+  gap: 6px;
+}
+
+.revenue-column:nth-child(3) {
+  grid-template-rows: 1fr;
+}
+
+.revenue-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.revenue-column > .revenue-group:last-child {
+  justify-content: space-between;
+}
+
+.revenue-group-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.auto-calc-group {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.revenue-results {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 6px 10px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.rev-res-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.rev-res-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.rev-res-item.full-width { grid-column: 1 / -1; }
+
+.rev-res-item span {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.rev-res-item strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.blue-highlight { color: #0a84ff !important; }
+.red-highlight { color: #ff453a !important; }
+
+/* =============================
+   Valuation Panel
+   ============================= */
+.valuation-panel {
+  max-width: 620px;
+}
+
+.valuation-section { width: 100%; }
+
+.valuation-calc-grid {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+.valuation-calc-grid .revenue-column,
+.valuation-settings-grid .revenue-column,
+.valuation-results-grid .revenue-column {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.valuation-calc-grid .revenue-column:last-child .revenue-results {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.valuation-calc-grid .revenue-column:last-child .revenue-results .rev-res-grid {
+  flex: 1;
+  grid-auto-rows: 1fr;
+  gap: 6px;
+}
+
+.valuation-settings-grid { grid-template-columns: 1fr !important; }
+.valuation-results-grid { grid-template-columns: 1fr !important; }
+
+.valuation-tab {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--font);
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 140ms ease;
+}
+
+.valuation-tab.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.valuation-select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: #fff;
+  font-size: 1.05rem;
+  font-family: var(--font);
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  outline: none;
+}
+
+.valuation-select:focus { border-color: rgba(255, 255, 255, 0.4); }
+.valuation-select option { background-color: #1e1e1e; color: #fff; }
+
+/* =================================
+   RESPONSIVE: Tablet (601-900px)
+   ================================= */
+@media (max-width: 900px) {
+  .revenue-scroll-area {
+    grid-template-columns: 1fr 1fr;
+  }
+  .revenue-column:nth-child(3) {
+    grid-column: 1 / -1;
+    grid-template-rows: 1fr;
+  }
+  .revenue-panel { max-width: 100%; }
+}
+
+/* =================================
+   RESPONSIVE: Mobile (≤600px)
+   ================================= */
+@media (max-width: 600px) {
+  :root { --nav-height: 56px; }
+
+  .top-nav {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .nav-logo { font-size: 1rem; }
+
+  .mode-btn {
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  .main-content {
+    padding: 14px 10px 24px;
+  }
+
+  /* Calculator: full-width on mobile */
+  .calculator {
+    max-width: 100%;
+  }
+
+  .btn { height: 60px; font-size: 1.1rem; }
+  .result { font-size: 40px; }
+
+  /* Loan: full-width */
+  .loan-panel { max-width: 100%; }
+
+  /* Revenue: single column stack */
+  .revenue-scroll-area {
+    grid-template-columns: 1fr;
+  }
+
+  .revenue-column {
+    grid-template-rows: auto;
+  }
+
+  .revenue-column:nth-child(3) {
+    grid-template-rows: auto;
+  }
+
+  /* Valuation: single column */
+  .valuation-panel { max-width: 100%; }
+  .valuation-calc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .valuation-calc-grid .revenue-column,
+  .valuation-settings-grid .revenue-column,
+  .valuation-results-grid .revenue-column {
+    height: auto;
+  }
+
+  .valuation-calc-grid .revenue-column:last-child .revenue-results {
+    flex: none;
+    min-height: 200px;
+  }
+}
