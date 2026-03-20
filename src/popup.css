@@ -575,8 +575,9 @@ body[data-mode="revenue"] .revenue-panel {
 
 .expression {
   width: 100%;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
   font-size: 42px;
   color: var(--text-dim);
   line-height: 1.25;
@@ -592,6 +593,7 @@ body[data-mode="revenue"] .revenue-panel {
   letter-spacing: 0.01em;
   font-size: 52px;
   min-height: 0;
+  white-space: nowrap;
 }
 
 .buttons {

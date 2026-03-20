@@ -137,8 +137,8 @@
       currentSize -= 1;
       element.style.fontSize = currentSize + 'px';
     }
-    element.style.whiteSpace = 'pre-wrap';
-    element.style.wordBreak = 'break-all';
+    // element.style.whiteSpace = 'pre-wrap';
+    // element.style.wordBreak = 'break-all';
   };
 
   const render = () => {
