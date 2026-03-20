@@ -147,10 +147,10 @@
     if (!expDiv || !resDiv) return;
 
     if (justEvaluated) {
-      expDiv.textContent = formatExpressionWithCommas(previousExpression);
-      resDiv.textContent = formatDisplayValue(current, 21);
+      expDiv.textContent = previousExpression;
+      resDiv.textContent = current;
     } else {
-      expDiv.textContent = formatExpressionWithCommas(current);
+      expDiv.textContent = current;
       resDiv.textContent = '';
     }
 
@@ -167,18 +167,6 @@
       if (displayContainer) {
         displayContainer.scrollTop = displayContainer.scrollHeight;
       }
-    });
-  };
-
-  /**
-   * 数式文字列内の数字部分にのみ3桁区切りのコンマを付与する
-   */
-  const formatExpressionWithCommas = (expr) => {
-    return expr.replace(/(\d+(\.\d*)?)/g, (match) => {
-      const parts = match.split('.');
-      // 整数部分にコンマを付与
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      return parts.join('.');
     });
   };
 
@@ -231,7 +219,7 @@
       if (lastNumber.includes('.')) return;
     }
 
-    if (current.length >= 21) return;
+    if (current.length >= 18) return;
     if (current === '0' && !/[×÷+.-]/.test(normalizedValue)) {
       current = normalizedValue;
     } else {
@@ -420,7 +408,7 @@
     return tokens;
   };
 
-  const formatDisplayValue = (value, threshold = 21, expDecimals = 5) => {
+  const formatDisplayValue = (value, threshold = 12, expDecimals = 5) => {
     const num = Number(typeof value === 'string' ? value.replace(/,/g, '') : value);
     if (!Number.isFinite(num)) return 'Error';
     if (num === 0) return '0';
@@ -446,12 +434,12 @@
     if (match && match.index !== undefined) {
       const num = Number(match[1].replace(/,/g, ''));
       const next = fn(num);
-      current = current.slice(0, match.index) + formatDisplayValue(next, 21);
+      current = current.slice(0, match.index) + formatDisplayValue(next, 12);
       return true;
     }
     const cleanCurrent = current.replace(/,/g, '');
     if (!Number.isNaN(Number(cleanCurrent))) {
-      current = formatDisplayValue(fn(Number(cleanCurrent)), 21);
+      current = formatDisplayValue(fn(Number(cleanCurrent)), 12);
       return true;
     }
     return false;
@@ -489,7 +477,7 @@
           case '÷': res = k === 0 ? NaN : valToUse / k; break;
         }
         previousExpression = `${valToUse} ${constantOperator}${constantOperator}`;
-        current = formatDisplayValue(res, 21);
+        current = formatDisplayValue(res, 12);
         justEvaluated = true;
         saveState();
         render();
@@ -573,7 +561,7 @@
 
       const result = evalPostfix();
       previousExpression = current + ' =';
-      current = formatDisplayValue(result, 21);
+      current = formatDisplayValue(result, 12);
       justEvaluated = true;
       saveState();
     } catch {
