@@ -51,7 +51,7 @@ header {
   background: rgba(28, 28, 30, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding-bottom: env(safe-area-inset-bottom); /* iPhoneのバーを考慮 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 12px); /* 下部の余白を広げた */
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: none;
 }
@@ -59,7 +59,7 @@ header {
 .mode-toggle {
   display: flex;
   background: rgba(255, 255, 255, 0.03);
-  padding: 12px 14px;
+  padding: 16px 14px; /* 上下のパディングを増やして高さを出した */
   gap: 10px;
   justify-content: space-between;
 }
@@ -69,8 +69,8 @@ header {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.02);
   color: var(--text-primary);
-  padding: 10px 8px;
-  font-size: 14px;
+  padding: 14px 8px; /* 縦のパディングを増やしてボタンを縦長に */
+  font-size: 15px; /* 文字も少し大きく */
   font-weight: 500;
   border-radius: 12px;
   cursor: pointer;
@@ -87,7 +87,7 @@ header {
 /* Main Container */
 main {
   flex: 1;
-  padding: 16px 16px 100px; /* 下部にナビゲーション分の余白を追加 */
+  padding: 16px 16px 120px; /* ナビを高くしたのでメインの余白も増やした */
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
