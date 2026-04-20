@@ -59,9 +59,7 @@ header {
 
 .sub-tabs-container {
   display: none;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 12px 14px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px 14px 0 14px;
 }
 
 [data-mode="valuation"] .sub-tabs-container {
@@ -70,7 +68,7 @@ header {
 
 .sub-tabs-container > div {
   display: none;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
 }
 
