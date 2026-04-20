@@ -16,11 +16,6 @@
 
   <main>
     <section class="loan-panel" aria-live="polite">
-      <div class="loan-tabs">
-        <button class="loan-tab active" data-loan-tab="payment">返済額</button>
-        <button class="loan-tab" data-loan-tab="borrow">借入額</button>
-        <button class="loan-tab" data-loan-tab="period">期間</button>
-      </div>
       <div class="loan-section" data-loan-tab-content="payment">
         <div class="loan-section-title">返済額計算（元利均等）</div>
         <div class="input-group">
@@ -197,10 +192,6 @@
     </section>
 
     <section class="valuation-panel" aria-live="polite">
-      <div class="loan-tabs">
-        <button class="valuation-tab active" data-valuation-tab="calc">評価計算</button>
-        <button class="valuation-tab" data-valuation-tab="settings">設定</button>
-      </div>
 
       <div class="valuation-section" data-valuation-tab-content="calc">
         <div class="revenue-group">
@@ -299,6 +290,19 @@
   </main>
 
   <header>
+    <div class="sub-tabs-container">
+      <!-- ローン用のサブタブ -->
+      <div class="loan-tabs" data-mode-only="loan">
+        <button class="loan-tab active" data-loan-tab="payment">返済額</button>
+        <button class="loan-tab" data-loan-tab="borrow">借入額</button>
+        <button class="loan-tab" data-loan-tab="period">期間</button>
+      </div>
+      <!-- 積算用のサブタブ -->
+      <div class="valuation-tabs" data-mode-only="valuation">
+        <button class="valuation-tab active" data-valuation-tab="calc">評価計算</button>
+        <button class="valuation-tab" data-valuation-tab="settings">設定</button>
+      </div>
+    </div>
     <div class="mode-toggle" aria-label="Mode switch">
       <button class="mode-btn active" data-mode="normal">電卓</button>
       <button class="mode-btn" data-mode="loan">ローン</button>
