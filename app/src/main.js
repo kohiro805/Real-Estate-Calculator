@@ -448,20 +448,38 @@
     // Revenue Calculation (Shared logic)
     updateRevenueOutputs();
 
-    // Valuation (Simple logic)
+    // Valuation (Accurate logic)
     const struct = valuationInputs.valStructure.value;
     let life = 22; let recPrice = 150000;
-    if (struct === 'rc') { life = 47; recPrice = 242000; }
-    else if (struct === 'steel') { life = 34; recPrice = 180000; }
     
-    const landVal = toNumber(valuationInputs.valRoadsideValue.value) * toNumber(valuationInputs.valLandArea.value);
+    if (struct === 'rc') {
+      life = toNumber(document.getElementById('settingsLifeRC').value || 47);
+      recPrice = toNumber(document.getElementById('settingsPriceRC').value || 242000);
+    } else if (struct === 'steel') {
+      life = toNumber(document.getElementById('settingsLifeSteel').value || 34);
+      recPrice = toNumber(document.getElementById('settingsPriceSteel').value || 180000);
+    } else {
+      life = toNumber(document.getElementById('settingsLifeWood').value || 22);
+      recPrice = toNumber(document.getElementById('settingsPriceWood').value || 150000);
+    }
+    
+    const roadside = toNumber(valuationInputs.valRoadsideValue.value);
+    const landArea = toNumber(valuationInputs.valLandArea.value);
+    const landCorr = toNumber(document.getElementById('valLandCorrection').value || 100) / 100;
+    const landVal = roadside * landArea * landCorr;
+
+    const floorArea = toNumber(valuationInputs.valFloorArea.value);
     const age = toNumber(valuationInputs.valBuildingAge.value);
-    const buildingVal = toNumber(valuationInputs.valFloorArea.value) * recPrice * (Math.max(0, life - age) / life);
+    const buildingVal = floorArea * recPrice * (Math.max(0, life - age) / life);
+    
     const totalVal = landVal + buildingVal;
+    const propPrice = toNumber(valuationInputs.valPropPrice.value);
+    const ratio = propPrice > 0 ? (totalVal / propPrice) * 100 : 0;
     
     document.getElementById('outValTotal').textContent = totalVal ? Math.round(totalVal).toLocaleString() : '-';
     document.getElementById('outValLand').textContent = landVal ? Math.round(landVal).toLocaleString() : '-';
     document.getElementById('outValBuilding').textContent = buildingVal ? Math.round(buildingVal).toLocaleString() : '-';
+    document.getElementById('outValRatio').textContent = propPrice ? ratio.toFixed(2) + '%' : '-';
   };
 
   // Event Listeners
