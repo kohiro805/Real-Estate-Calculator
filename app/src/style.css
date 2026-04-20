@@ -125,13 +125,7 @@ main {
   display: none !important;
 }
 
-/* Loan Submodes Display Control */
-.loan-section { display: none; }
-[data-loan-submode="payment"] .loan-section[data-loan-tab-content="payment"],
-[data-loan-submode="borrow"] .loan-section[data-loan-tab-content="borrow"],
-[data-loan-submode="period"] .loan-section[data-loan-tab-content="period"] {
-  display: block;
-}
+/* Loan Submodes Display Control - Removed as it is now unified */
 
 /* Common Section Styles */
 section {
