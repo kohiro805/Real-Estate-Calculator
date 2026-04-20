@@ -351,6 +351,7 @@
   const setMode = (mode) => {
     bodyEl.dataset.mode = mode;
     modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+    if (mode === 'revenue') updateRevenueOutputs(); // 収益モード時は計算を実行
     saveState();
   };
 
@@ -360,31 +361,107 @@
     saveState();
   };
 
+  const updateColor = (elId, val) => {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    el.classList.remove('blue-highlight', 'red-highlight');
+    if (val < 0) el.classList.add('red-highlight');
+    else if (val > 0) el.classList.add('blue-highlight');
+  };
+
+  const updateRevenueOutputs = () => {
+    const price = toNumber(revenueInputs.propPrice.value);
+    const down = toNumber(revenueInputs.propDownPayment.value);
+    const rate = toNumber(revenueInputs.propInterest.value);
+    const term = toNumber(revenueInputs.propTerm.value);
+    const annualRentFull = toNumber(revenueInputs.propAnnualRentFull.value);
+    const occ = toNumber(revenueInputs.propOccupancy.value) / 100;
+    const expRatio = toNumber(revenueInputs.propExpRatio.value) / 100;
+
+    // 1. 取得コストの計算
+    const purchaseExpenses = price * 0.08;
+    const totalCost = price + purchaseExpenses;
+    const loanAmt = Math.max(0, price - down);
+    const monthlyPay = calcMonthlyPayment(loanAmt, rate, term);
+    const annualPay = monthlyPay * 12;
+
+    document.getElementById('outPropExpenses').textContent = purchaseExpenses ? Math.round(purchaseExpenses).toLocaleString() : '-';
+    document.getElementById('outTotalCost').textContent = totalCost ? Math.round(totalCost).toLocaleString() : '-';
+    document.getElementById('outPropLoanAmount').textContent = loanAmt ? Math.round(loanAmt).toLocaleString() : '-';
+    document.getElementById('outPropMonthlyPay').textContent = monthlyPay ? Math.round(monthlyPay).toLocaleString() : '-';
+    document.getElementById('outPropAnnualPay').textContent = annualPay ? Math.round(annualPay).toLocaleString() : '-';
+
+    // 2. 運営収支の計算
+    const monthlyRentFull = annualRentFull / 12;
+    const monthlyRentEst = monthlyRentFull * occ;
+    const annualRentEst = annualRentFull * occ;
+    const annualOpex = annualRentFull * expRatio;
+    const noi = annualRentEst - annualOpex;
+    const expectedYield = parseFloat(document.getElementById('propExpectedYield').value) || 0;
+    const salePrice = (expectedYield > 0 && annualRentFull > 0) ? (annualRentFull / (expectedYield / 100)) * 0.95 : 0;
+
+    document.getElementById('outPropMonthlyRentEst').textContent = monthlyRentEst ? Math.round(monthlyRentEst).toLocaleString() : '-';
+    document.getElementById('outPropAnnualRentEst').textContent = annualRentEst ? Math.round(annualRentEst).toLocaleString() : '-';
+    document.getElementById('outAnnualOpex').textContent = annualOpex ? Math.round(annualOpex).toLocaleString() : '-';
+    document.getElementById('outPropNOI').textContent = noi ? Math.round(noi).toLocaleString() : '-';
+    document.getElementById('outPropSalePrice').textContent = salePrice ? Math.round(salePrice).toLocaleString() : '-';
+
+    // 3. 収益指標の計算
+    const annualCF = noi - annualPay;
+    const monthlyCF = annualCF / 12;
+    const saleProfit = salePrice > 0 ? salePrice - loanAmt : 0;
+
+    document.getElementById('outCF').textContent = annualCF ? Math.round(annualCF).toLocaleString() : '-';
+    document.getElementById('outMonthlyCF').textContent = monthlyCF ? Math.round(monthlyCF).toLocaleString() : '-';
+    document.getElementById('outPropSaleProfit').textContent = saleProfit ? Math.round(saleProfit).toLocaleString() : '-';
+    updateColor('outCF', annualCF);
+    updateColor('outMonthlyCF', monthlyCF);
+    updateColor('outPropSaleProfit', saleProfit);
+
+    const grossYield = price > 0 ? (annualRentFull / price) * 100 : 0;
+    const noiYield = price > 0 ? (noi / price) * 100 : 0;
+    const yieldGap = noiYield - rate;
+    const dscr = annualPay > 0 ? noi / annualPay : 0;
+    const dsr = monthlyRentFull > 0 ? (monthlyPay / monthlyRentFull) * 100 : 0;
+    const kPercent = price > 0 ? (loanAmt / price) * 100 : 0;
+    const roe = (down + purchaseExpenses) > 0 ? (annualCF / (down + purchaseExpenses)) * 100 : 0;
+    const roi = totalCost > 0 ? (annualCF / totalCost) * 100 : 0;
+
+    document.getElementById('outGrossYield').textContent = price ? grossYield.toFixed(2) + '%' : '-';
+    document.getElementById('outNOIYield').textContent = price ? noiYield.toFixed(2) + '%' : '-';
+    document.getElementById('outYieldGap').textContent = price ? yieldGap.toFixed(2) + '%' : '-';
+    document.getElementById('outDSCR').textContent = annualPay ? dscr.toFixed(2) : '-';
+    document.getElementById('outDSR').textContent = monthlyRentFull ? dsr.toFixed(2) + '%' : '-';
+    document.getElementById('outKPercent').textContent = price ? kPercent.toFixed(2) + '%' : '-';
+    document.getElementById('outROE').textContent = (down + purchaseExpenses) ? roe.toFixed(2) + '%' : '-';
+    document.getElementById('outROI').textContent = totalCost ? roi.toFixed(2) + '%' : '-';
+  };
+
   const updateAllOutputs = () => {
-    // Loan
+    // Loan Calculation
     const amort = calcAmortizationEqualPayment(loanInputs.loanAmount.value, loanInputs.interestRate.value, loanInputs.loanTerm.value);
     document.getElementById('outMonthlyPayment').textContent = amort.monthlyPayment ? Math.round(amort.monthlyPayment).toLocaleString() : '-';
     
     const possible = calcLoanAmount(loanInputs.monthlyBudget.value, loanInputs.interestRate2.value, loanInputs.loanTerm2.value);
     document.getElementById('outLoanPossible').textContent = possible ? Math.round(possible).toLocaleString() : '-';
 
-    // Revenue
-    const price = toNumber(revenueInputs.propPrice.value);
-    const down = toNumber(revenueInputs.propDownPayment.value);
-    const rent = toNumber(revenueInputs.propAnnualRentFull.value);
-    const loanAmt = Math.max(0, price - down);
-    const monthlyPay = calcMonthlyPayment(loanAmt, revenueInputs.propInterest.value, revenueInputs.propTerm.value);
-    const annualPay = monthlyPay * 12;
-    const noi = rent * (toNumber(revenueInputs.propOccupancy.value)/100) * (1 - toNumber(revenueInputs.propExpRatio.value)/100);
-    const cf = noi - annualPay;
-
-    document.getElementById('outCF').textContent = cf ? Math.round(cf).toLocaleString() : '-';
-    document.getElementById('outMonthlyCF').textContent = cf ? Math.round(cf/12).toLocaleString() : '-';
-    document.getElementById('outGrossYield').textContent = price ? (rent/price*100).toFixed(2) + '%' : '-';
+    // Revenue Calculation (Shared logic)
+    updateRevenueOutputs();
 
     // Valuation (Simple logic)
+    const struct = valuationInputs.valStructure.value;
+    let life = 22; let recPrice = 150000;
+    if (struct === 'rc') { life = 47; recPrice = 242000; }
+    else if (struct === 'steel') { life = 34; recPrice = 180000; }
+    
     const landVal = toNumber(valuationInputs.valRoadsideValue.value) * toNumber(valuationInputs.valLandArea.value);
-    document.getElementById('outValTotal').textContent = landVal ? Math.round(landVal).toLocaleString() : '-';
+    const age = toNumber(valuationInputs.valBuildingAge.value);
+    const buildingVal = toNumber(valuationInputs.valFloorArea.value) * recPrice * (Math.max(0, life - age) / life);
+    const totalVal = landVal + buildingVal;
+    
+    document.getElementById('outValTotal').textContent = totalVal ? Math.round(totalVal).toLocaleString() : '-';
+    document.getElementById('outValLand').textContent = landVal ? Math.round(landVal).toLocaleString() : '-';
+    document.getElementById('outValBuilding').textContent = buildingVal ? Math.round(buildingVal).toLocaleString() : '-';
   };
 
   // Event Listeners

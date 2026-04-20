@@ -100,94 +100,99 @@
 
     <section class="revenue-panel" aria-live="polite">
       <div class="revenue-container">
-        <!-- Section 1: Inputs -->
-        <div class="revenue-group">
-          <div class="revenue-group-title">取得条件 (入力)</div>
-          <div class="loan-row">
-            <label>取得価格</label>
-            <input type="number" id="propPrice" inputmode="decimal" placeholder="50000000" />
+        <!-- 第1段: 入力エリア -->
+        <div class="revenue-top-grid">
+          <div class="revenue-group">
+            <div class="revenue-group-title">取得条件 (入力)</div>
+            <div class="loan-row">
+              <label>取得価格</label>
+              <input type="number" id="propPrice" inputmode="decimal" placeholder="140000000" />
+            </div>
+            <div class="loan-row">
+              <label>自己資金</label>
+              <input type="number" id="propDownPayment" inputmode="decimal" placeholder="2000000" />
+            </div>
+            <div class="loan-row">
+              <label>借入金利 (%)</label>
+              <input type="number" id="propInterest" inputmode="decimal" step="0.01" placeholder="2.0" />
+            </div>
+            <div class="loan-row">
+              <label>借入期間 (年)</label>
+              <input type="number" id="propTerm" inputmode="numeric" placeholder="35" />
+            </div>
           </div>
-          <div class="loan-row">
-            <label>自己資金</label>
-            <input type="number" id="propDownPayment" inputmode="decimal" placeholder="5000000" />
-          </div>
-          <div class="loan-row">
-            <label>借入金利</label>
-            <input type="number" id="propInterest" inputmode="decimal" step="0.01" placeholder="1.5" />
-          </div>
-          <div class="loan-row">
-            <label>借入期間</label>
-            <input type="number" id="propTerm" inputmode="numeric" placeholder="35" />
+
+          <div class="revenue-group">
+            <div class="revenue-group-title">運営条件 (入力)</div>
+            <div class="loan-row">
+              <label>満室年次賃料</label>
+              <input type="number" id="propAnnualRentFull" inputmode="decimal" placeholder="8544000" />
+            </div>
+            <div class="loan-row">
+              <label>想定稼働率 (%)</label>
+              <input type="number" id="propOccupancy" inputmode="decimal" placeholder="90" />
+            </div>
+            <div class="loan-row">
+              <label>運営費率 (%)</label>
+              <input type="number" id="propExpRatio" inputmode="decimal" placeholder="20" />
+            </div>
+            <div class="loan-row">
+              <label>売却利回り (%)</label>
+              <input type="number" id="propExpectedYield" inputmode="decimal" step="0.01" placeholder="7.5" />
+            </div>
           </div>
         </div>
 
-        <div class="revenue-group">
-          <div class="revenue-group-title">運営条件 (入力)</div>
-          <div class="loan-row">
-            <label>満室年次賃料</label>
-            <input type="number" id="propAnnualRentFull" inputmode="decimal" placeholder="3750000" />
+        <!-- 第2段: 自動計算エリア -->
+        <div class="revenue-mid-grid">
+          <div class="revenue-group auto-calc-panel">
+            <div class="revenue-group-title">取得コスト (自動)</div>
+            <div class="detail-row"><span>取得諸費用</span><span id="outPropExpenses">-</span></div>
+            <div class="detail-row"><span>取得総額</span><span id="outTotalCost">-</span></div>
+            <div class="detail-row"><span>借入金額</span><span id="outPropLoanAmount">-</span></div>
+            <div class="detail-row"><span>月次返済額</span><span id="outPropMonthlyPay">-</span></div>
+            <div class="detail-row"><span>年次返済額</span><span id="outPropAnnualPay">-</span></div>
           </div>
-          <div class="loan-row">
-            <label>想定稼働率(%)</label>
-            <input type="number" id="propOccupancy" inputmode="decimal" placeholder="90" />
-          </div>
-          <div class="loan-row">
-            <label>運営費率(%)</label>
-            <input type="number" id="propExpRatio" inputmode="decimal" placeholder="20" />
-          </div>
-          <div class="loan-row">
-            <label>売却利回り(%)</label>
-            <input type="number" id="propExpectedYield" inputmode="decimal" step="0.01" placeholder="7" />
+
+          <div class="revenue-group auto-calc-panel">
+            <div class="revenue-group-title">運営収支 (自動)</div>
+            <div class="detail-row"><span>想定月次賃料</span><span id="outPropMonthlyRentEst">-</span></div>
+            <div class="detail-row"><span>想定年次賃料</span><span id="outPropAnnualRentEst">-</span></div>
+            <div class="detail-row"><span>年次運営費</span><span id="outAnnualOpex">-</span></div>
+            <div class="detail-row"><span>営業純利益</span><span id="outPropNOI">-</span></div>
+            <div class="detail-row"><span>想定売却額</span><span id="outPropSalePrice">-</span></div>
           </div>
         </div>
 
-        <!-- Section 2: Metrics -->
-        <div class="revenue-results">
+        <!-- 第3段: 収益指標 -->
+        <div class="revenue-results-v2">
           <div class="revenue-group-title">収益指標</div>
-          <div class="metrics-grid">
-            <div class="metric-card highlight">
+          <div class="main-metrics">
+            <div class="metric-card main-highlight">
               <span class="label">年次キャッシュフロー</span>
               <strong id="outCF">-</strong>
             </div>
-            <div class="metric-card highlight">
+            <div class="metric-card main-highlight">
               <span class="label">月次キャッシュフロー</span>
               <strong id="outMonthlyCF">-</strong>
             </div>
-            <div class="metric-card highlight">
+            <div class="metric-card main-highlight">
               <span class="label">想定売却益</span>
               <strong id="outPropSaleProfit">-</strong>
             </div>
-            
-            <div class="metric-card">
-              <span class="label">表面利回り</span>
-              <strong id="outGrossYield">-</strong>
-            </div>
-            <div class="metric-card">
-              <span class="label">実質利回り</span>
-              <strong id="outNOIYield">-</strong>
-            </div>
-            <div class="metric-card">
-              <span class="label">ROE</span>
-              <strong id="outROE">-</strong>
-            </div>
-            <div class="metric-card">
-              <span class="label">DSCR</span>
-              <strong id="outDSCR">-</strong>
-            </div>
+          </div>
+          
+          <div class="sub-metrics-grid">
+            <div class="metric-card"><span>表面利回り</span><strong id="outGrossYield">-</strong></div>
+            <div class="metric-card"><span>実質利回り</span><strong id="outNOIYield">-</strong></div>
+            <div class="metric-card"><span>イールドギャップ</span><strong id="outYieldGap">-</strong></div>
+            <div class="metric-card"><span>債務回収比率</span><strong id="outDSCR">-</strong></div>
+            <div class="metric-card"><span>返済比率</span><strong id="outDSR">-</strong></div>
+            <div class="metric-card"><span>借入金比率</span><strong id="outKPercent">-</strong></div>
+            <div class="metric-card"><span>自己資本利益率</span><strong id="outROE">-</strong></div>
+            <div class="metric-card"><span>投資利益率</span><strong id="outROI">-</strong></div>
           </div>
         </div>
-
-        <!-- Section 3: Detailed Auto Calcs -->
-        <details class="revenue-details">
-          <summary>詳細分析データ</summary>
-          <div class="auto-calc-list">
-            <div class="detail-row"><span>取得諸費用:</span><span id="outPropExpenses">-</span></div>
-            <div class="detail-row"><span>取得総額:</span><span id="outTotalCost">-</span></div>
-            <div class="detail-row"><span>借入金額:</span><span id="outPropLoanAmount">-</span></div>
-            <div class="detail-row"><span>想定金利差:</span><span id="outYieldGap">-</span></div>
-            <div class="detail-row"><span>想定売却額:</span><span id="outPropSalePrice">-</span></div>
-          </div>
-        </details>
       </div>
     </section>
 

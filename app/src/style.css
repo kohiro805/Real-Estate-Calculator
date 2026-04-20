@@ -297,6 +297,73 @@ section {
   grid-column: span 2;
 }
 
+/* Revenue V2 Layout */
+.revenue-top-grid, .revenue-mid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.auto-calc-panel {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.revenue-results-v2 {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.main-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.metric-card.main-highlight {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 14px;
+}
+
+.metric-card.main-highlight strong {
+  font-size: 24px;
+}
+
+.sub-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.sub-metrics-grid .metric-card {
+  padding: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sub-metrics-grid .metric-card strong {
+  font-size: 16px;
+}
+
+.sub-metrics-grid .metric-card span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Colors */
+.blue-highlight {
+  color: #0a84ff !important;
+}
+
+.red-highlight {
+  color: #ff453a !important;
+}
+
 /* Calculator Styles */
 .calculator {
   display: flex;
