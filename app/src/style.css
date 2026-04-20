@@ -60,7 +60,7 @@ header {
 .sub-tabs-container {
   display: none;
   background: rgba(255, 255, 255, 0.04);
-  padding: 8px 14px 0;
+  padding: 12px 14px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -143,11 +143,93 @@ section {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Loan Tabs */
-.loan-tabs {
+/* Unified Loan Panel */
+.unified-loan {
+  padding: 14px;
+}
+
+.unified-loan .input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.unified-loan .loan-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.unified-loan label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+.input-with-unit {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-unit input {
+  width: 100%;
+  padding-right: 28px;
+  text-align: left;
+}
+
+.input-with-unit .unit {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 11px;
+}
+
+.loan-results-compact {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 20px;
+}
+
+.result-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-grid-small {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.result-card .res-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.result-card strong {
+  font-size: 16px;
+  color: var(--accent-blue);
+}
+
+.result-grid-small .result-card {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.result-grid-small .result-card strong {
+  font-size: 14px;
+  color: var(--text-primary);
 }
 
 .loan-tab, .valuation-tab {

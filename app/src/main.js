@@ -182,15 +182,10 @@
         view: document.body.dataset.mode
       },
       loanInputs: {
-        loanAmount: loanInputs.loanAmount.value,
-        interestRate: loanInputs.interestRate.value,
+        loanAmt: loanInputs.loanAmt.value,
+        loanRate: loanInputs.loanRate.value,
         loanTerm: loanInputs.loanTerm.value,
-        monthlyBudget: loanInputs.monthlyBudget.value,
-        interestRate2: loanInputs.interestRate2.value,
-        loanTerm2: loanInputs.loanTerm2.value,
-        periodLoanAmount: loanInputs.periodLoanAmount.value,
-        periodInterestRate: loanInputs.periodInterestRate.value,
-        periodMonthlyPayment: loanInputs.periodMonthlyPayment.value
+        loanMonthly: loanInputs.loanMonthly.value,
       },
       revenueInputs: {
         propPrice: revenueInputs.propPrice.value,
@@ -231,6 +226,11 @@
       constantValue = state.constants.value || null;
     }
     if (state.loanInputs) {
+      // データの移行
+      if (state.loanInputs.loanAmount && !state.loanInputs.loanAmt) state.loanInputs.loanAmt = state.loanInputs.loanAmount;
+      if (state.loanInputs.interestRate && !state.loanInputs.loanRate) state.loanInputs.loanRate = state.loanInputs.interestRate;
+      if (state.loanInputs.monthlyBudget && !state.loanInputs.loanMonthly) state.loanInputs.loanMonthly = state.loanInputs.monthlyBudget;
+      
       Object.keys(state.loanInputs).forEach(k => { if(loanInputs[k]) loanInputs[k].value = state.loanInputs[k]; });
     }
     if (state.revenueInputs) {
@@ -319,15 +319,10 @@
   const modeButtons = document.querySelectorAll('.mode-btn');
   const bodyEl = document.body;
   const loanInputs = {
-    loanAmount: document.getElementById('loanAmount'),
-    interestRate: document.getElementById('interestRate'),
+    loanAmt: document.getElementById('loanAmt'),
+    loanRate: document.getElementById('loanRate'),
     loanTerm: document.getElementById('loanTerm'),
-    monthlyBudget: document.getElementById('monthlyBudget'),
-    interestRate2: document.getElementById('interestRate2'),
-    loanTerm2: document.getElementById('loanTerm2'),
-    periodLoanAmount: document.getElementById('periodLoanAmount'),
-    periodInterestRate: document.getElementById('periodInterestRate'),
-    periodMonthlyPayment: document.getElementById('periodMonthlyPayment'),
+    loanMonthly: document.getElementById('loanMonthly'),
   };
   const revenueInputs = {
     propPrice: document.getElementById('propPrice'),
@@ -438,12 +433,17 @@
   };
 
   const updateAllOutputs = () => {
-    // Loan Calculation
-    const amort = calcAmortizationEqualPayment(loanInputs.loanAmount.value, loanInputs.interestRate.value, loanInputs.loanTerm.value);
-    document.getElementById('outMonthlyPayment').textContent = amort.monthlyPayment ? Math.round(amort.monthlyPayment).toLocaleString() : '-';
+    // 1. Repayment Amount
+    const amort = calcAmortizationEqualPayment(loanInputs.loanAmt.value, loanInputs.loanRate.value, loanInputs.loanTerm.value);
+    document.getElementById('outMonthly').textContent = amort.monthlyPayment ? Math.round(amort.monthlyPayment).toLocaleString() : '-';
     
-    const possible = calcLoanAmount(loanInputs.monthlyBudget.value, loanInputs.interestRate2.value, loanInputs.loanTerm2.value);
-    document.getElementById('outLoanPossible').textContent = possible ? Math.round(possible).toLocaleString() : '-';
+    // 2. Max Borrowing Amount
+    const possible = calcLoanAmount(loanInputs.loanMonthly.value, loanInputs.loanRate.value, loanInputs.loanTerm.value);
+    document.getElementById('outMaxBorrow').textContent = possible ? Math.round(possible).toLocaleString() : '-';
+
+    // 3. Loan Term
+    const termResult = calcLoanTerm(loanInputs.loanAmt.value, loanInputs.loanRate.value, loanInputs.loanMonthly.value);
+    document.getElementById('outMaxTerm').textContent = (termResult && termResult !== Infinity) ? termResult.toFixed(1) + '年' : '-';
 
     // Revenue Calculation (Shared logic)
     updateRevenueOutputs();

@@ -16,83 +16,53 @@
 
   <main>
     <section class="loan-panel" aria-live="polite">
-      <div class="loan-section" data-loan-tab-content="payment">
-        <div class="loan-section-title">返済額計算（元利均等）</div>
-        <div class="input-group">
+      <div class="loan-section unified-loan">
+        <div class="loan-section-title">ローン計算 (統合)</div>
+        <div class="input-grid">
           <div class="loan-row">
             <label>借入額</label>
-            <input type="number" id="loanAmount" inputmode="decimal" placeholder="50000000" />
-            <span class="unit">円</span>
+            <div class="input-with-unit">
+              <input type="number" id="loanAmt" inputmode="decimal" placeholder="50000000" />
+              <span class="unit">円</span>
+            </div>
           </div>
           <div class="loan-row">
             <label>金利</label>
-            <input type="number" id="interestRate" inputmode="decimal" step="0.01" placeholder="1.5" />
-            <span class="unit">%</span>
+            <div class="input-with-unit">
+              <input type="number" id="loanRate" inputmode="decimal" step="0.01" placeholder="1.5" />
+              <span class="unit">%</span>
+            </div>
           </div>
           <div class="loan-row">
             <label>期間</label>
-            <input type="number" id="loanTerm" inputmode="numeric" placeholder="35" />
-            <span class="unit">年</span>
+            <div class="input-with-unit">
+              <input type="number" id="loanTerm" inputmode="numeric" placeholder="35" />
+              <span class="unit">年</span>
+            </div>
+          </div>
+          <div class="loan-row">
+            <label>毎月返済</label>
+            <div class="input-with-unit">
+              <input type="number" id="loanMonthly" inputmode="decimal" placeholder="150000" />
+              <span class="unit">円</span>
+            </div>
           </div>
         </div>
-        <div class="loan-output">
-          <div class="output-item">
-            <span>月額返済</span>
-            <strong id="outMonthlyPayment">-</strong>
-          </div>
-        </div>
-      </div>
 
-      <div class="loan-section" data-loan-tab-content="borrow">
-        <div class="loan-section-title">借入可能額計算</div>
-        <div class="input-group">
-          <div class="loan-row">
-            <label>毎月返済額</label>
-            <input type="number" id="monthlyBudget" inputmode="decimal" placeholder="100000" />
-            <span class="unit">円</span>
+        <div class="loan-results-compact">
+          <div class="result-card">
+            <span class="res-label">毎月返済額 (計算)</span>
+            <strong id="outMonthly">-</strong>
           </div>
-          <div class="loan-row">
-            <label>金利</label>
-            <input type="number" id="interestRate2" inputmode="decimal" step="0.01" placeholder="1.5" />
-            <span class="unit">%</span>
-          </div>
-          <div class="loan-row">
-            <label>期間</label>
-            <input type="number" id="loanTerm2" inputmode="numeric" placeholder="35" />
-            <span class="unit">年</span>
-          </div>
-        </div>
-        <div class="loan-output">
-          <div class="output-item">
-            <span>借入可能額</span>
-            <strong id="outLoanPossible">-</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="loan-section" data-loan-tab-content="period">
-        <div class="loan-section-title">返済期間計算</div>
-        <div class="input-group">
-          <div class="loan-row">
-            <label>借入額</label>
-            <input type="number" id="periodLoanAmount" inputmode="decimal" placeholder="50000000" />
-            <span class="unit">円</span>
-          </div>
-          <div class="loan-row">
-            <label>金利</label>
-            <input type="number" id="periodInterestRate" inputmode="decimal" step="0.01" placeholder="1.5" />
-            <span class="unit">%</span>
-          </div>
-          <div class="loan-row">
-            <label>毎月返済額</label>
-            <input type="number" id="periodMonthlyPayment" inputmode="decimal" placeholder="150000" />
-            <span class="unit">円</span>
-          </div>
-        </div>
-        <div class="loan-output">
-          <div class="output-item">
-            <span>返済期間</span>
-            <strong id="outPeriodResult">-</strong>
+          <div class="result-grid-small">
+            <div class="result-card">
+              <span class="res-label">借入可能額</span>
+              <strong id="outMaxBorrow">-</strong>
+            </div>
+            <div class="result-card">
+              <span class="res-label">最短返済期間</span>
+              <strong id="outMaxTerm">-</strong>
+            </div>
           </div>
         </div>
       </div>
@@ -305,12 +275,12 @@
 
   <header>
     <div class="sub-tabs-container">
-      <!-- ローン用のサブタブ -->
-      <div class="loan-tabs" data-mode-only="loan">
+      <!-- ローン用のサブタブ (統合されたため非表示、または削除) -->
+      <!-- <div class="loan-tabs" data-mode-only="loan">
         <button class="loan-tab active" data-loan-tab="payment">返済額</button>
         <button class="loan-tab" data-loan-tab="borrow">借入額</button>
         <button class="loan-tab" data-loan-tab="period">期間</button>
-      </div>
+      </div> -->
       <!-- 積算用のサブタブ -->
       <div class="valuation-tabs" data-mode-only="valuation">
         <button class="valuation-tab active" data-valuation-tab="calc">評価計算</button>
