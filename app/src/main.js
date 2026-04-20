@@ -181,11 +181,10 @@
         loanSubmode: document.body.dataset.loanSubmode,
         view: document.body.dataset.mode
       },
-      loanInputs: {
-        loanAmt: loanInputs.loanAmt.value,
-        loanRate: loanInputs.loanRate.value,
-        loanTerm: loanInputs.loanTerm.value,
-        loanMonthly: loanInputs.loanMonthly.value,
+      loanAmount: {
+        payment: { amt: loanInputs.loanAmount.value, rate: loanInputs.interestRate.value, term: loanInputs.loanTerm.value },
+        borrow: { budget: loanInputs.monthlyBudget.value, rate: loanInputs.interestRate2.value, term: loanInputs.loanTerm2.value },
+        period: { amt: loanInputs.periodLoanAmount.value, rate: loanInputs.periodInterestRate.value, monthly: loanInputs.periodMonthlyPayment.value }
       },
       revenueInputs: {
         propPrice: revenueInputs.propPrice.value,
@@ -225,13 +224,22 @@
       constantOperator = state.constants.operator || null;
       constantValue = state.constants.value || null;
     }
-    if (state.loanInputs) {
-      // データの移行
-      if (state.loanInputs.loanAmount && !state.loanInputs.loanAmt) state.loanInputs.loanAmt = state.loanInputs.loanAmount;
-      if (state.loanInputs.interestRate && !state.loanInputs.loanRate) state.loanInputs.loanRate = state.loanInputs.interestRate;
-      if (state.loanInputs.monthlyBudget && !state.loanInputs.loanMonthly) state.loanInputs.loanMonthly = state.loanInputs.monthlyBudget;
-      
-      Object.keys(state.loanInputs).forEach(k => { if(loanInputs[k]) loanInputs[k].value = state.loanInputs[k]; });
+    if (state.loanAmount) {
+      if (state.loanAmount.payment) {
+        loanInputs.loanAmount.value = state.loanAmount.payment.amt || '';
+        loanInputs.interestRate.value = state.loanAmount.payment.rate || '';
+        loanInputs.loanTerm.value = state.loanAmount.payment.term || '';
+      }
+      if (state.loanAmount.borrow) {
+        loanInputs.monthlyBudget.value = state.loanAmount.borrow.budget || '';
+        loanInputs.interestRate2.value = state.loanAmount.borrow.rate || '';
+        loanInputs.loanTerm2.value = state.loanAmount.borrow.term || '';
+      }
+      if (state.loanAmount.period) {
+        loanInputs.periodLoanAmount.value = state.loanAmount.period.amt || '';
+        loanInputs.periodInterestRate.value = state.loanAmount.period.rate || '';
+        loanInputs.periodMonthlyPayment.value = state.loanAmount.period.monthly || '';
+      }
     }
     if (state.revenueInputs) {
       Object.keys(state.revenueInputs).forEach(k => { if(revenueInputs[k]) revenueInputs[k].value = state.revenueInputs[k]; });
@@ -319,10 +327,15 @@
   const modeButtons = document.querySelectorAll('.mode-btn');
   const bodyEl = document.body;
   const loanInputs = {
-    loanAmt: document.getElementById('loanAmt'),
-    loanRate: document.getElementById('loanRate'),
+    loanAmount: document.getElementById('loanAmount'),
+    interestRate: document.getElementById('interestRate'),
     loanTerm: document.getElementById('loanTerm'),
-    loanMonthly: document.getElementById('loanMonthly'),
+    monthlyBudget: document.getElementById('monthlyBudget'),
+    interestRate2: document.getElementById('interestRate2'),
+    loanTerm2: document.getElementById('loanTerm2'),
+    periodLoanAmount: document.getElementById('periodLoanAmount'),
+    periodInterestRate: document.getElementById('periodInterestRate'),
+    periodMonthlyPayment: document.getElementById('periodMonthlyPayment'),
   };
   const revenueInputs = {
     propPrice: document.getElementById('propPrice'),
@@ -433,8 +446,17 @@
   };
 
   const updateAllOutputs = () => {
-    // Note: Loan results are now handled via manual "Calculate" buttons in consolidated view.
-    // updateAllOutputs will focus on other panels and shared state updates.
+    // 1. 返済額計算
+    const repay = calcMonthlyPayment(loanInputs.loanAmount.value, loanInputs.interestRate.value, loanInputs.loanTerm.value);
+    document.getElementById('outMonthlyPayment').textContent = repay > 0 ? Math.round(repay).toLocaleString() + ' 円' : '-';
+
+    // 2. 借入可能額計算
+    const borrow = calcLoanAmount(loanInputs.monthlyBudget.value, loanInputs.interestRate2.value, loanInputs.loanTerm2.value);
+    document.getElementById('outLoanPossible').textContent = borrow > 0 ? Math.round(borrow).toLocaleString() + ' 円' : '-';
+
+    // 3. 返済期間計算
+    const period = calcLoanTerm(loanInputs.periodLoanAmount.value, loanInputs.periodInterestRate.value, loanInputs.periodMonthlyPayment.value);
+    document.getElementById('outPeriodResult').textContent = (period > 0 && period !== Infinity) ? period.toFixed(1) + ' 年' : '-';
 
     // Revenue Calculation (Shared logic)
     updateRevenueOutputs();
@@ -488,28 +510,6 @@
 
   modeButtons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
   document.querySelectorAll('.loan-tab').forEach(btn => btn.addEventListener('click', () => setLoanSubmode(btn.dataset.loanTab)));
-  document.querySelectorAll('.loan-calc-btn').forEach(btn => btn.addEventListener('click', () => {
-    const target = btn.dataset.calc;
-    const rate = loanInputs.loanRate.value;
-    const amount = loanInputs.loanAmt.value;
-    const term = loanInputs.loanTerm.value;
-    const monthly = loanInputs.loanMonthly.value;
-
-    if (target === 'loanMonthly') {
-      const res = calcMonthlyPayment(amount, rate, term);
-      if (res && res !== Infinity) loanInputs.loanMonthly.value = Math.round(res);
-    } else if (target === 'loanAmt') {
-      const res = calcLoanAmount(monthly, rate, term);
-      if (res && res !== Infinity) loanInputs.loanAmt.value = Math.round(res);
-    } else if (target === 'loanTerm') {
-      const res = calcLoanTerm(amount, rate, monthly);
-      if (res && res !== Infinity) loanInputs.loanTerm.value = res.toFixed(1);
-    }
-    updateAllOutputs();
-    saveState();
-    render();
-  }));
-
   document.querySelectorAll('.valuation-tab').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('.valuation-tab').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.valuation-section').forEach(s => s.style.display = s.dataset.valuationTabContent === btn.dataset.valuationTab ? 'block' : 'none');
