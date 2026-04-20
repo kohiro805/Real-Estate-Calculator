@@ -59,7 +59,9 @@ header {
 
 .sub-tabs-container {
   display: none;
-  padding: 16px 14px 0 14px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 12px 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 [data-mode="valuation"] .sub-tabs-container {
@@ -68,7 +70,7 @@ header {
 
 .sub-tabs-container > div {
   display: none;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
 }
 
@@ -162,7 +164,7 @@ section {
 }
 
 /* Input Styles */
-.revenue-group, .loan-section, .valuation-section {
+.revenue-group, .loan-section {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
