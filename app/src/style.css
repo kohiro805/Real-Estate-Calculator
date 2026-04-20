@@ -64,7 +64,6 @@ header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-[data-mode="loan"] .sub-tabs-container,
 [data-mode="valuation"] .sub-tabs-container {
   display: block;
 }
