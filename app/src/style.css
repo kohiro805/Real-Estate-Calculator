@@ -358,11 +358,19 @@ section {
 
 .metric-card.main-highlight {
   background: rgba(255, 255, 255, 0.05);
-  padding: 14px;
+  padding: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-card.main-highlight .label {
+  font-size: 13px; /* make label slightly larger than sub-metrics (11px) but inline */
 }
 
 .metric-card.main-highlight strong {
-  font-size: 24px;
+  font-size: 20px;
+  line-height: 1;
 }
 
 .sub-metrics-grid {
