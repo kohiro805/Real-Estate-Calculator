@@ -13,14 +13,6 @@
 </head>
 
 <body data-mode="normal" data-loan-submode="payment">
-  <header>
-    <div class="mode-toggle" aria-label="Mode switch">
-      <button class="mode-btn active" data-mode="normal">電卓</button>
-      <button class="mode-btn" data-mode="loan">ローン</button>
-      <button class="mode-btn" data-mode="revenue">収益</button>
-      <button class="mode-btn" data-mode="valuation">積算</button>
-    </div>
-  </header>
 
   <main>
     <section class="loan-panel" aria-live="polite">
@@ -305,6 +297,15 @@
       </div>
     </section>
   </main>
+
+  <header>
+    <div class="mode-toggle" aria-label="Mode switch">
+      <button class="mode-btn active" data-mode="normal">電卓</button>
+      <button class="mode-btn" data-mode="loan">ローン</button>
+      <button class="mode-btn" data-mode="revenue">収益</button>
+      <button class="mode-btn" data-mode="valuation">積算</button>
+    </div>
+  </header>
 
   <script type="module" src="src/main.js"></script>
 </body>
