@@ -222,7 +222,7 @@ section {
   color: var(--text-secondary);
 }
 
-.loan-output, .valuation-results {
+.loan-output {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
@@ -231,7 +231,7 @@ section {
   backdrop-filter: blur(16px);
 }
 
-.output-item, .valuation-results .metric-card {
+.output-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -239,9 +239,48 @@ section {
   font-size: 16px;
 }
 
-.output-item strong, .valuation-results strong {
+.output-item strong {
   font-size: 20px;
   font-weight: 600;
+}
+
+.valuation-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .valuation-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.result-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.val-metric {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.val-metric .label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.val-metric strong {
+  font-size: 20px;
+  color: var(--text-primary);
+  font-weight: 600;
+  display: block;
 }
 
 /* Revenue Specific */

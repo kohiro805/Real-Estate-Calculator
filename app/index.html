@@ -201,53 +201,77 @@
 
     <section class="valuation-panel" aria-live="polite">
       <div class="valuation-section" data-valuation-tab-content="calc">
-        <div class="revenue-group">
-          <div class="revenue-group-title">物件・土地</div>
-          <div class="loan-row">
-            <label>物件価格</label>
-            <input type="number" id="valPropPrice" inputmode="decimal" placeholder="50000000" />
+        <div class="valuation-container">
+          <div class="valuation-left">
+            <div class="revenue-group">
+              <div class="revenue-group-title">物件概況</div>
+              <div class="loan-row">
+                <label>物件価格</label>
+                <input type="number" id="valPropPrice" inputmode="decimal" placeholder="19900000" />
+              </div>
+            </div>
+
+            <div class="revenue-group">
+              <div class="revenue-group-title">土地情報</div>
+              <div class="loan-row">
+                <label>相続税路線価</label>
+                <input type="number" id="valRoadsideValue" inputmode="decimal" placeholder="32000" />
+              </div>
+              <div class="loan-row">
+                <label>土地面積 (㎡)</label>
+                <input type="number" id="valLandArea" inputmode="decimal" placeholder="181" />
+              </div>
+              <div class="loan-row">
+                <label>地形補正率 (%)</label>
+                <input type="number" id="valLandCorrection" inputmode="decimal" value="100" />
+              </div>
+            </div>
+
+            <div class="revenue-group">
+              <div class="revenue-group-title">建物情報</div>
+              <div class="loan-row">
+                <label>建物構造</label>
+                <select id="valStructure">
+                  <option value="wood">木造</option>
+                  <option value="steel">鉄骨造</option>
+                  <option value="rc">RC造</option>
+                </select>
+              </div>
+              <div class="loan-row">
+                <label>延べ床面積 (㎡)</label>
+                <input type="number" id="valFloorArea" inputmode="decimal" placeholder="158" />
+              </div>
+              <div class="loan-row">
+                <label>築年数 (年)</label>
+                <input type="number" id="valBuildingAge" inputmode="numeric" placeholder="10" />
+              </div>
+            </div>
           </div>
-          <div class="loan-row">
-            <label>路線価 (円/㎡)</label>
-            <input type="number" id="valRoadsideValue" inputmode="decimal" placeholder="100000" />
-          </div>
-          <div class="loan-row">
-            <label>土地面積 (㎡)</label>
-            <input type="number" id="valLandArea" inputmode="decimal" placeholder="100" />
-          </div>
-          <div class="loan-row">
-            <label>土地補正 (%)</label>
-            <input type="number" id="valLandCorrection" inputmode="decimal" value="100" />
-          </div>
-        </div>
-        <div class="revenue-group">
-          <div class="revenue-group-title">建物</div>
-          <div class="loan-row">
-            <label>構造</label>
-            <select id="valStructure">
-              <option value="wood">木造</option>
-              <option value="steel">鉄骨造</option>
-              <option value="rc">RC造</option>
-            </select>
-          </div>
-          <div class="loan-row">
-            <label>延床面積 (㎡)</label>
-            <input type="number" id="valFloorArea" inputmode="decimal" placeholder="100" />
-          </div>
-          <div class="loan-row">
-            <label>築年数</label>
-            <input type="number" id="valBuildingAge" inputmode="numeric" placeholder="10" />
-          </div>
-        </div>
-        <div class="valuation-results">
-          <div class="metric-card highlight">
-            <span class="label">合計評価額</span>
-            <strong id="outValTotal">-</strong>
-          </div>
-          <div class="metrics-grid">
-            <div class="metric-card"><span>土地評価</span><strong id="outValLand">-</strong></div>
-            <div class="metric-card"><span>建物評価</span><strong id="outValBuilding">-</strong></div>
-            <div class="metric-card highlight"><span>評価倍率</span><strong id="outValRatio">-</strong></div>
+
+          <div class="valuation-right">
+            <div class="revenue-group result-group">
+              <div class="revenue-group-title">評価結果</div>
+              
+              <div class="val-metric">
+                <span class="label">土地評価額</span>
+                <strong id="outValLand">-</strong>
+              </div>
+              
+              <div class="val-metric">
+                <span class="label">建物評価額</span>
+                <strong id="outValBuilding">-</strong>
+              </div>
+              
+              <div class="val-metric">
+                <span class="label">合計評価額</span>
+                <strong id="outValTotal">-</strong>
+              </div>
+              
+              <div class="val-metric">
+                <span class="label">積算比率</span>
+                <strong id="outValRatio">-</strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>
