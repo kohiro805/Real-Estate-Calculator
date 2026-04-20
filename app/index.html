@@ -18,50 +18,32 @@
     <section class="loan-panel" aria-live="polite">
       <div class="loan-section unified-loan">
         <div class="loan-section-title">ローン計算 (統合)</div>
-        <div class="input-grid">
-          <div class="loan-row">
-            <label>借入額</label>
-            <div class="input-with-unit">
+        <div class="loan-input-stack">
+          <div class="loan-row-v2">
+            <label>借入額 (円)</label>
+            <div class="input-action-group">
               <input type="number" id="loanAmt" inputmode="decimal" placeholder="50000000" />
-              <span class="unit">円</span>
+              <button class="loan-calc-btn" data-calc="loanAmt">算出</button>
             </div>
           </div>
-          <div class="loan-row">
-            <label>金利</label>
-            <div class="input-with-unit">
+          <div class="loan-row-v2">
+            <label>金利 (%)</label>
+            <div class="input-action-group no-btn">
               <input type="number" id="loanRate" inputmode="decimal" step="0.01" placeholder="1.5" />
-              <span class="unit">%</span>
             </div>
           </div>
-          <div class="loan-row">
-            <label>期間</label>
-            <div class="input-with-unit">
+          <div class="loan-row-v2">
+            <label>期間 (年)</label>
+            <div class="input-action-group">
               <input type="number" id="loanTerm" inputmode="numeric" placeholder="35" />
-              <span class="unit">年</span>
+              <button class="loan-calc-btn" data-calc="loanTerm">算出</button>
             </div>
           </div>
-          <div class="loan-row">
-            <label>毎月返済</label>
-            <div class="input-with-unit">
+          <div class="loan-row-v2">
+            <label>毎月返済 (円)</label>
+            <div class="input-action-group">
               <input type="number" id="loanMonthly" inputmode="decimal" placeholder="150000" />
-              <span class="unit">円</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="loan-results-compact">
-          <div class="result-card">
-            <span class="res-label">毎月返済額 (計算)</span>
-            <strong id="outMonthly">-</strong>
-          </div>
-          <div class="result-grid-small">
-            <div class="result-card">
-              <span class="res-label">借入可能額</span>
-              <strong id="outMaxBorrow">-</strong>
-            </div>
-            <div class="result-card">
-              <span class="res-label">最短返済期間</span>
-              <strong id="outMaxTerm">-</strong>
+              <button class="loan-calc-btn" data-calc="loanMonthly">算出</button>
             </div>
           </div>
         </div>

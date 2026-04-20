@@ -433,17 +433,8 @@
   };
 
   const updateAllOutputs = () => {
-    // 1. Repayment Amount
-    const amort = calcAmortizationEqualPayment(loanInputs.loanAmt.value, loanInputs.loanRate.value, loanInputs.loanTerm.value);
-    document.getElementById('outMonthly').textContent = amort.monthlyPayment ? Math.round(amort.monthlyPayment).toLocaleString() : '-';
-    
-    // 2. Max Borrowing Amount
-    const possible = calcLoanAmount(loanInputs.loanMonthly.value, loanInputs.loanRate.value, loanInputs.loanTerm.value);
-    document.getElementById('outMaxBorrow').textContent = possible ? Math.round(possible).toLocaleString() : '-';
-
-    // 3. Loan Term
-    const termResult = calcLoanTerm(loanInputs.loanAmt.value, loanInputs.loanRate.value, loanInputs.loanMonthly.value);
-    document.getElementById('outMaxTerm').textContent = (termResult && termResult !== Infinity) ? termResult.toFixed(1) + '年' : '-';
+    // Note: Loan results are now handled via manual "Calculate" buttons in consolidated view.
+    // updateAllOutputs will focus on other panels and shared state updates.
 
     // Revenue Calculation (Shared logic)
     updateRevenueOutputs();
@@ -497,6 +488,28 @@
 
   modeButtons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
   document.querySelectorAll('.loan-tab').forEach(btn => btn.addEventListener('click', () => setLoanSubmode(btn.dataset.loanTab)));
+  document.querySelectorAll('.loan-calc-btn').forEach(btn => btn.addEventListener('click', () => {
+    const target = btn.dataset.calc;
+    const rate = loanInputs.loanRate.value;
+    const amount = loanInputs.loanAmt.value;
+    const term = loanInputs.loanTerm.value;
+    const monthly = loanInputs.loanMonthly.value;
+
+    if (target === 'loanMonthly') {
+      const res = calcMonthlyPayment(amount, rate, term);
+      if (res && res !== Infinity) loanInputs.loanMonthly.value = Math.round(res);
+    } else if (target === 'loanAmt') {
+      const res = calcLoanAmount(monthly, rate, term);
+      if (res && res !== Infinity) loanInputs.loanAmt.value = Math.round(res);
+    } else if (target === 'loanTerm') {
+      const res = calcLoanTerm(amount, rate, monthly);
+      if (res && res !== Infinity) loanInputs.loanTerm.value = res.toFixed(1);
+    }
+    updateAllOutputs();
+    saveState();
+    render();
+  }));
+
   document.querySelectorAll('.valuation-tab').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('.valuation-tab').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.valuation-section').forEach(s => s.style.display = s.dataset.valuationTabContent === btn.dataset.valuationTab ? 'block' : 'none');
