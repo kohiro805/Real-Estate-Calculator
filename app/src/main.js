@@ -1,0 +1,416 @@
+(() => {
+  const display = document.getElementById('display');
+  const calc = document.querySelector('.calculator');
+  const buttons = Array.from(document.querySelectorAll('.btn'));
+
+  let current = '0';
+  let justEvaluated = false;
+  let previousExpression = '';
+  let constantOperator = null;
+  let constantValue = null;
+  const modeState = { mode: 'basic' };
+
+  const toNumber = (val) => {
+    const n = Number(val);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const roundTo = (value, dp = 2) => {
+    const factor = 10 ** dp;
+    return Math.round((value + Number.EPSILON) * factor) / factor;
+  };
+
+  const calcAmortizationEqualPayment = (loanAmount, interestRate, loanTermYears) => {
+    const P = toNumber(loanAmount);
+    const r = toNumber(interestRate) / 12 / 100;
+    const n = Math.max(1, Math.trunc(toNumber(loanTermYears) * 12));
+    if (r === 0) {
+      const pmt = roundTo(P / n, 2);
+      return { monthlyPayment: pmt, totalPayment: roundTo(pmt * n, 2) };
+    }
+    const factor = (1 - Math.pow(1 + r, -n));
+    const monthlyPayment = roundTo((P * r) / factor, 2);
+    return { monthlyPayment };
+  };
+
+  const calcMonthlyPayment = (loanAmount, rate, years) => {
+    const P = toNumber(loanAmount);
+    const r = toNumber(rate) / 12 / 100;
+    const n = Math.max(1, Math.trunc(toNumber(years) * 12));
+    if (r === 0) return roundTo(P / n, 2);
+    const factor = 1 - Math.pow(1 + r, -n);
+    return roundTo((P * r) / factor, 2);
+  };
+
+  const calcLoanAmount = (monthlyPayment, rate, years) => {
+    const pay = toNumber(monthlyPayment);
+    const r = toNumber(rate) / 12 / 100;
+    const n = Math.max(1, Math.trunc(toNumber(years) * 12));
+    if (r === 0) return roundTo(pay * n, 2);
+    const factor = 1 - Math.pow(1 + r, -n);
+    return roundTo((pay * factor) / r, 2);
+  };
+
+  const calcLoanTerm = (loanAmount, rate, monthlyPayment) => {
+    const P = toNumber(loanAmount);
+    const r = toNumber(rate) / 12 / 100;
+    const PMT = toNumber(monthlyPayment);
+    if (P <= 0 || PMT <= 0) return 0;
+    if (r === 0) return P / PMT / 12;
+    if (P * r >= PMT) return Infinity;
+    const n = -Math.log(1 - (P * r / PMT)) / Math.log(1 + r);
+    return n / 12;
+  };
+
+  const adjustFontSize = (element, maxFontSize, minFontSize) => {
+    if (!element.textContent) return;
+    element.style.whiteSpace = 'nowrap';
+    let currentSize = maxFontSize;
+    element.style.fontSize = currentSize + 'px';
+    while (element.scrollWidth > element.clientWidth && currentSize > minFontSize) {
+      currentSize -= 1;
+      element.style.fontSize = currentSize + 'px';
+    }
+  };
+
+  const render = () => {
+    const expDiv = document.getElementById('expression');
+    const resDiv = document.getElementById('result');
+    if (!expDiv || !resDiv) return;
+
+    if (justEvaluated) {
+      expDiv.textContent = formatExpressionWithCommas(previousExpression);
+      resDiv.textContent = formatDisplayValue(current, 21);
+      
+      // 動的にフォントサイズを調整（結果表示時）
+      requestAnimationFrame(() => {
+        adjustFontSize(resDiv, 64, 24); // 最大64px、最小24px
+        adjustFontSize(expDiv, 24, 16);
+      });
+    } else {
+      expDiv.textContent = formatExpressionWithCommas(current);
+      resDiv.textContent = '';
+      
+      // 入力中の式表示サイズを調整
+      requestAnimationFrame(() => {
+        adjustFontSize(expDiv, 48, 20); // 入力中は大きく表示
+      });
+    }
+
+    const kIndicator = document.getElementById('constant-indicator');
+    if (kIndicator) kIndicator.classList.toggle('active', !!constantOperator);
+
+    if (expDiv) expDiv.scrollLeft = expDiv.scrollWidth;
+  };
+
+  const formatExpressionWithCommas = (expr) => {
+    return expr.replace(/(\d+(\.\d*)?)/g, (match) => {
+      const parts = match.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    });
+  };
+
+  const append = (value) => {
+    let normalizedValue = value;
+    if (value === '*') normalizedValue = '×';
+    if (value === '/') normalizedValue = '÷';
+    const isOp = /[×÷+-]/.test(normalizedValue);
+
+    if (justEvaluated) {
+      if (/[0-9.]/.test(normalizedValue)) current = '0';
+      justEvaluated = false;
+    }
+
+    if (isOp) {
+      const lastChar = current.slice(-1);
+      if (/[×÷+-]/.test(lastChar)) {
+        if (lastChar === normalizedValue) {
+          const parts = current.split(/[×÷+-]/);
+          const operand = parts[parts.length - 2]; 
+          if (operand) {
+            constantOperator = normalizedValue;
+            constantValue = operand.replace(/,/g, '');
+          }
+        } else {
+          current = current.slice(0, -1) + normalizedValue;
+        }
+        saveState();
+        return; 
+      }
+    }
+
+    if (normalizedValue === '.') {
+      const lastNumber = current.split(/[-+×÷]/).pop();
+      if (lastNumber.includes('.')) return;
+    }
+
+    if (current.length >= 100) return;
+    if (current === '0' && !/[×÷+.-]/.test(normalizedValue)) {
+      current = normalizedValue;
+    } else {
+      current += normalizedValue;
+    }
+    saveState();
+  };
+
+  const clearAll = () => {
+    current = '0';
+    previousExpression = '';
+    justEvaluated = false;
+    constantOperator = null;
+    constantValue = null;
+    saveState();
+  };
+
+  const backspace = () => {
+    if (justEvaluated) {
+      clearAll();
+      render();
+      return;
+    }
+    current = current.length > 1 ? current.slice(0, -1) : '0';
+    saveState();
+  };
+
+  const saveState = () => {
+    const state = {
+      calculator: { current, previousExpression, justEvaluated },
+      constants: { operator: constantOperator, value: constantValue },
+      modes: {
+        loanSubmode: document.body.dataset.loanSubmode,
+        view: document.body.dataset.mode
+      },
+      loanInputs: {
+        loanAmount: loanInputs.loanAmount.value,
+        interestRate: loanInputs.interestRate.value,
+        loanTerm: loanInputs.loanTerm.value,
+        monthlyBudget: loanInputs.monthlyBudget.value,
+        interestRate2: loanInputs.interestRate2.value,
+        loanTerm2: loanInputs.loanTerm2.value,
+        periodLoanAmount: loanInputs.periodLoanAmount.value,
+        periodInterestRate: loanInputs.periodInterestRate.value,
+        periodMonthlyPayment: loanInputs.periodMonthlyPayment.value
+      },
+      revenueInputs: {
+        propPrice: revenueInputs.propPrice.value,
+        propDownPayment: revenueInputs.propDownPayment.value,
+        propInterest: revenueInputs.propInterest.value,
+        propTerm: revenueInputs.propTerm.value,
+        propAnnualRentFull: revenueInputs.propAnnualRentFull.value,
+        propOccupancy: revenueInputs.propOccupancy.value,
+        propExpRatio: revenueInputs.propExpRatio.value,
+        propExpectedYield: revenueInputs.propExpectedYield.value
+      },
+      valuationInputs: {
+        valPropPrice: valuationInputs.valPropPrice.value,
+        valRoadsideValue: valuationInputs.valRoadsideValue.value,
+        valLandArea: valuationInputs.valLandArea.value,
+        valStructure: valuationInputs.valStructure.value,
+        valFloorArea: valuationInputs.valFloorArea.value,
+        valBuildingAge: valuationInputs.valBuildingAge.value
+      }
+    };
+    localStorage.setItem('calculatorState', JSON.stringify(state));
+  };
+
+  const loadState = () => {
+    const saved = localStorage.getItem('calculatorState');
+    if (!saved) {
+      setMode('normal');
+      return;
+    }
+    const state = JSON.parse(saved);
+    if (state.calculator) {
+      current = state.calculator.current || '0';
+      previousExpression = state.calculator.previousExpression || '';
+      justEvaluated = state.calculator.justEvaluated || false;
+    }
+    if (state.constants) {
+      constantOperator = state.constants.operator || null;
+      constantValue = state.constants.value || null;
+    }
+    if (state.loanInputs) {
+      Object.keys(state.loanInputs).forEach(k => { if(loanInputs[k]) loanInputs[k].value = state.loanInputs[k]; });
+    }
+    if (state.revenueInputs) {
+      Object.keys(state.revenueInputs).forEach(k => { if(revenueInputs[k]) revenueInputs[k].value = state.revenueInputs[k]; });
+    }
+    if (state.valuationInputs) {
+      Object.keys(state.valuationInputs).forEach(k => { if(valuationInputs[k]) valuationInputs[k].value = state.valuationInputs[k]; });
+    }
+    if (state.modes) {
+      if (state.modes.view) setMode(state.modes.view);
+      if (state.modes.loanSubmode) setLoanSubmode(state.modes.loanSubmode);
+    }
+    updateAllOutputs();
+    render();
+  };
+
+  const tokenize = (expr) => {
+    const tokens = [];
+    let i = 0;
+    while (i < expr.length) {
+      const ch = expr[i];
+      if (ch === ' ') { i++; continue; }
+      if ('()+*/'.includes(ch)) { tokens.push(ch); i++; continue; }
+      if (ch === '-') {
+        const isUnary = tokens.length === 0 || ('+-*/('.includes(tokens[tokens.length - 1]));
+        if (isUnary) {
+          let j = i + 1;
+          while (j < expr.length && /[0-9.]/.test(expr[j])) j++;
+          tokens.push(expr.slice(i, j));
+          i = j; continue;
+        }
+        tokens.push(ch); i++; continue;
+      }
+      if (/[0-9.]/.test(ch)) {
+        let j = i;
+        while (j < expr.length && /[0-9.]/.test(expr[j])) j++;
+        tokens.push(expr.slice(i, j));
+        i = j; continue;
+      }
+      i++;
+    }
+    return tokens;
+  };
+
+  const formatDisplayValue = (value, threshold = 21) => {
+    const num = Number(typeof value === 'string' ? value.replace(/,/g, '') : value);
+    if (!Number.isFinite(num)) return 'Error';
+    if (num === 0) return '0';
+    return num.toLocaleString('ja-JP', { maximumFractionDigits: 10 });
+  };
+
+  const evaluate = () => {
+    if (constantOperator && constantValue) {
+      const k = Number(constantValue);
+      let valToUse = Number(current.replace(/,/g, '').replace(/[×÷+-]$/, ''));
+      let res;
+      switch (constantOperator) {
+        case '+': res = valToUse + k; break;
+        case '-': res = valToUse - k; break;
+        case '×': res = valToUse * k; break;
+        case '÷': res = k === 0 ? NaN : valToUse / k; break;
+      }
+      previousExpression = `${valToUse} ${constantOperator}${constantOperator}`;
+      current = formatDisplayValue(res, 21);
+      justEvaluated = true;
+      saveState();
+      render();
+      return;
+    }
+
+    try {
+      let normalized = current.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '').replace(/[+\-*/]$/, '');
+      if (!normalized) return;
+      const result = eval(normalized); // Simple eval for now as it's safe local input
+      previousExpression = normalized.replace(/\*/g, '×').replace(/\//g, '÷') + ' =';
+      current = formatDisplayValue(result);
+      justEvaluated = true;
+    } catch {
+      current = 'Error';
+    }
+    saveState();
+    render();
+  };
+
+  // UI Glue
+  const modeButtons = document.querySelectorAll('.mode-btn');
+  const bodyEl = document.body;
+  const loanInputs = {
+    loanAmount: document.getElementById('loanAmount'),
+    interestRate: document.getElementById('interestRate'),
+    loanTerm: document.getElementById('loanTerm'),
+    monthlyBudget: document.getElementById('monthlyBudget'),
+    interestRate2: document.getElementById('interestRate2'),
+    loanTerm2: document.getElementById('loanTerm2'),
+    periodLoanAmount: document.getElementById('periodLoanAmount'),
+    periodInterestRate: document.getElementById('periodInterestRate'),
+    periodMonthlyPayment: document.getElementById('periodMonthlyPayment'),
+  };
+  const revenueInputs = {
+    propPrice: document.getElementById('propPrice'),
+    propDownPayment: document.getElementById('propDownPayment'),
+    propInterest: document.getElementById('propInterest'),
+    propTerm: document.getElementById('propTerm'),
+    propAnnualRentFull: document.getElementById('propAnnualRentFull'),
+    propOccupancy: document.getElementById('propOccupancy'),
+    propExpRatio: document.getElementById('propExpRatio'),
+    propExpectedYield: document.getElementById('propExpectedYield')
+  };
+  const valuationInputs = {
+    valPropPrice: document.getElementById('valPropPrice'),
+    valRoadsideValue: document.getElementById('valRoadsideValue'),
+    valLandArea: document.getElementById('valLandArea'),
+    valStructure: document.getElementById('valStructure'),
+    valFloorArea: document.getElementById('valFloorArea'),
+    valBuildingAge: document.getElementById('valBuildingAge')
+  };
+
+  const setMode = (mode) => {
+    bodyEl.dataset.mode = mode;
+    modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+    saveState();
+  };
+
+  const setLoanSubmode = (sub) => {
+    bodyEl.dataset.loanSubmode = sub;
+    document.querySelectorAll('.loan-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.loanTab === sub));
+    saveState();
+  };
+
+  const updateAllOutputs = () => {
+    // Loan
+    const amort = calcAmortizationEqualPayment(loanInputs.loanAmount.value, loanInputs.interestRate.value, loanInputs.loanTerm.value);
+    document.getElementById('outMonthlyPayment').textContent = amort.monthlyPayment ? Math.round(amort.monthlyPayment).toLocaleString() : '-';
+    
+    const possible = calcLoanAmount(loanInputs.monthlyBudget.value, loanInputs.interestRate2.value, loanInputs.loanTerm2.value);
+    document.getElementById('outLoanPossible').textContent = possible ? Math.round(possible).toLocaleString() : '-';
+
+    // Revenue
+    const price = toNumber(revenueInputs.propPrice.value);
+    const down = toNumber(revenueInputs.propDownPayment.value);
+    const rent = toNumber(revenueInputs.propAnnualRentFull.value);
+    const loanAmt = Math.max(0, price - down);
+    const monthlyPay = calcMonthlyPayment(loanAmt, revenueInputs.propInterest.value, revenueInputs.propTerm.value);
+    const annualPay = monthlyPay * 12;
+    const noi = rent * (toNumber(revenueInputs.propOccupancy.value)/100) * (1 - toNumber(revenueInputs.propExpRatio.value)/100);
+    const cf = noi - annualPay;
+
+    document.getElementById('outCF').textContent = cf ? Math.round(cf).toLocaleString() : '-';
+    document.getElementById('outMonthlyCF').textContent = cf ? Math.round(cf/12).toLocaleString() : '-';
+    document.getElementById('outGrossYield').textContent = price ? (rent/price*100).toFixed(2) + '%' : '-';
+
+    // Valuation (Simple logic)
+    const landVal = toNumber(valuationInputs.valRoadsideValue.value) * toNumber(valuationInputs.valLandArea.value);
+    document.getElementById('outValTotal').textContent = landVal ? Math.round(landVal).toLocaleString() : '-';
+  };
+
+  // Event Listeners
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.value;
+      const action = btn.dataset.action;
+      if (action === 'clear') clearAll();
+      else if (action === 'delete') backspace();
+      else if (action === 'equals') evaluate();
+      else if (val) append(val);
+      render();
+    });
+  });
+
+  modeButtons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+  document.querySelectorAll('.loan-tab').forEach(btn => btn.addEventListener('click', () => setLoanSubmode(btn.dataset.loanTab)));
+  document.querySelectorAll('.valuation-tab').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('.valuation-tab').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.valuation-section').forEach(s => s.style.display = s.dataset.valuationTabContent === btn.dataset.valuationTab ? 'block' : 'none');
+  }));
+
+  document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => {
+    updateAllOutputs();
+    saveState();
+  }));
+
+  loadState();
+})();
