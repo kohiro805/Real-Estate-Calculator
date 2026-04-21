@@ -110,6 +110,8 @@ header {
 /* Main Container */
 main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 16px 16px 120px;
   max-width: 600px;
   margin: 0 auto;
@@ -420,6 +422,7 @@ section {
 
 /* Calculator Styles */
 .calculator {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
