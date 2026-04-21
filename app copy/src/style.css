@@ -1,0 +1,570 @@
+:root {
+  --bg-color: #1c1c1e;
+  --panel-bg: rgba(28, 28, 30, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --accent-blue: #0a84ff;
+  --accent-indigo: #5e5ce6;
+  --text-primary: #ffffff;
+  --text-secondary: #d0d0d0;
+  --danger: #ff453a;
+  --success: #32d74b;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #f2f2f7;
+    --panel-bg: rgba(242, 242, 247, 0.7);
+    --glass-bg: rgba(0, 0, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --text-primary: #1c1c1e;
+    --text-secondary: #636366;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Header & Navigation */
+header {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-tabs-container {
+  display: none;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 12px 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+[data-mode="valuation"] .sub-tabs-container {
+  display: block;
+}
+
+.sub-tabs-container > div {
+  display: none;
+  gap: 8px;
+  justify-content: center;
+}
+
+[data-mode="loan"] .loan-tabs,
+[data-mode="valuation"] .valuation-tabs {
+  display: flex;
+}
+
+.mode-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px 14px; /* 上下のパディングを増やして高さを出した */
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.mode-btn {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  padding: 14px 8px; /* 縦のパディングを増やしてボタンを縦長に */
+  font-size: 15px; /* 文字も少し大きく */
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 140ms ease;
+  backdrop-filter: blur(16px);
+}
+
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Main Container */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 120px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+[data-mode="valuation"] main {
+  padding-bottom: 180px;
+}
+
+/* Panels Visibility */
+[data-mode="normal"] section:not(.calculator),
+[data-mode="loan"] section:not(.loan-panel),
+[data-mode="revenue"] section:not(.revenue-panel),
+[data-mode="valuation"] section:not(.valuation-panel) {
+  display: none !important;
+}
+
+/* Loan Submodes Display Control - Removed as it is now unified */
+
+/* Common Section Styles */
+section {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Unified Loan Panel - Option 2: Badge Buttons */
+/* Loan Sections Vertical Stack */
+.loan-section {
+  display: block;
+}
+
+.loan-tab, .valuation-tab {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 10px 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 140ms ease;
+  backdrop-filter: blur(16px);
+}
+
+.loan-tab.active, .valuation-tab.active {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: var(--text-primary);
+}
+
+/* Input Styles */
+.revenue-group, .loan-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  backdrop-filter: blur(16px);
+}
+
+.loan-panel, .revenue-container, .valuation-left, .valuation-right, .valuation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.revenue-group-title, .loan-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.loan-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.loan-row:last-child { margin-bottom: 0; }
+
+.loan-row label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.loan-row input, .loan-row select {
+  width: 140px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 16px;
+  text-align: right;
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 140ms ease;
+}
+
+.loan-row input:focus, .loan-row select:focus {
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.loan-row .unit {
+  width: 24px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.loan-output {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 12px;
+  backdrop-filter: blur(16px);
+}
+
+.output-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.output-item span {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.output-item strong {
+  font-size: 20px;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.valuation-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .valuation-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.result-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.val-metric {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.val-metric .label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.val-metric strong {
+  font-size: 20px;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Revenue Specific */
+.revenue-results {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-card.highlight {
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metric-card .label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.metric-card strong {
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.metrics-grid .highlight {
+  grid-column: span 2;
+}
+
+/* Revenue V2 Layout */
+.revenue-top-grid, .revenue-mid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.auto-calc-panel {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.revenue-results-v2 {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.main-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.metric-card.main-highlight {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-card.main-highlight .label {
+  font-size: 13px; /* make label slightly larger than sub-metrics (11px) but inline */
+}
+
+.metric-card.main-highlight strong {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.sub-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.sub-metrics-grid .metric-card {
+  padding: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sub-metrics-grid .metric-card strong {
+  font-size: 16px;
+}
+
+.sub-metrics-grid .metric-card span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Colors */
+.blue-highlight {
+  color: #0a84ff !important;
+}
+
+.red-highlight {
+  color: #ff453a !important;
+}
+
+/* Calculator Styles */
+.calculator {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.display {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 14px;
+  text-align: right;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.constant-indicator {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 12px;
+  color: var(--accent-blue);
+  opacity: 0;
+}
+
+.constant-indicator.active { opacity: 1; }
+
+.expression {
+  font-size: 48px;
+  color: var(--text-secondary);
+  height: 58px;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  line-height: 1; /* 行の高さを固定 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.expression::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.result {
+  font-size: 64px;
+  font-weight: 700;
+  color: white;
+  word-break: break-all;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  line-height: 1;
+  overflow: hidden; /* 結果表示はスクロールさせない */
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.btn {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: clamp(16px, 6.5vw, 24px); /* 最小16px、推奨6.5vw、最大24px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 120ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(16px);
+}
+
+@media (min-width: 600px) {
+  .btn {
+    font-size: 24px;
+  }
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.96);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn[data-action="clear"],
+.btn[data-action="delete"],
+.btn[data-action="percent"],
+.btn[data-action="toggle-sign"] {
+  background: rgba(160, 160, 160, 0.15);
+}
+
+.btn[data-value="/"],
+.btn[data-value="*"],
+.btn[data-value="-"],
+.btn[data-value="+"],
+.btn[data-action="equals"] {
+  background: rgba(255, 149, 0, 0.2);
+  border-color: rgba(255, 149, 0, 0.3);
+  color: #ff9d0a;
+}
+
+/* Responsive Overrides */
+@media (max-width: 480px) {
+  .display { min-height: 140px; padding: 12px 20px; }
+  .metrics-grid { grid-template-columns: 1fr; }
+  .metrics-grid .highlight { grid-column: span 1; }
+}
+
+/* Revenue Details */
+.revenue-details {
+  margin-top: 16px;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 16px;
+}
+
+.revenue-details summary {
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.detail-row span:last-child {
+  color: var(--text-primary);
+  font-weight: 500;
+}
