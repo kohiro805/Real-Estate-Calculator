@@ -198,6 +198,7 @@
         propExpectedYield: revenueInputs.propExpectedYield.value
       },
       valuationInputs: {
+        valPropNameExport: document.getElementById('valPropNameExport') ? document.getElementById('valPropNameExport').value : '',
         valPropPrice: valuationInputs.valPropPrice.value,
         valRoadsideValue: valuationInputs.valRoadsideValue.value,
         valLandArea: valuationInputs.valLandArea.value,
@@ -350,6 +351,7 @@
     propExpectedYield: document.getElementById('propExpectedYield')
   };
   const valuationInputs = {
+    valPropNameExport: document.getElementById('valPropNameExport'),
     valPropPrice: document.getElementById('valPropPrice'),
     valRoadsideValue: document.getElementById('valRoadsideValue'),
     valLandArea: document.getElementById('valLandArea'),
@@ -555,6 +557,49 @@
 借入金比率: ${document.getElementById('outKPercent').textContent}
 自己資本利益率(ROE): ${document.getElementById('outROE').textContent}
 投資利益率(ROI): ${document.getElementById('outROI').textContent}
+`;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('結果をクリップボードにコピーしました！');
+        }).catch(() => {
+          alert('コピーに失敗しました。\n\n' + text);
+        });
+      } else {
+        alert('結果:\n' + text);
+      }
+    });
+  }
+
+  const exportValuationBtn = document.getElementById('exportValuationBtn');
+  if (exportValuationBtn) {
+    exportValuationBtn.addEventListener('click', () => {
+      const name = valuationInputs.valPropNameExport ? valuationInputs.valPropNameExport.value : '';
+      const structText = valuationInputs.valStructure.options ? valuationInputs.valStructure.options[valuationInputs.valStructure.selectedIndex].text : valuationInputs.valStructure.value;
+      const landCorrEl = document.getElementById('valLandCorrection');
+      const landCorr = landCorrEl && landCorrEl.value ? landCorrEl.value : '100';
+      
+      const text = `【積算シミュレーション結果】
+物件名: ${name || '未入力'}
+
+■ 物件概況
+物件価格: ${Number(valuationInputs.valPropPrice.value).toLocaleString() || 0}円
+
+■ 土地情報
+相続税路線価: ${Number(valuationInputs.valRoadsideValue.value).toLocaleString() || 0}円
+土地面積: ${valuationInputs.valLandArea.value || 0}㎡
+地形補正率: ${landCorr}%
+
+■ 建物情報
+建物構造: ${structText}
+延べ床面積: ${valuationInputs.valFloorArea.value || 0}㎡
+築年数: ${valuationInputs.valBuildingAge.value || 0}年
+
+■ 評価結果
+土地評価額: ${document.getElementById('outValLand').textContent}円
+建物評価額: ${document.getElementById('outValBuilding').textContent}円
+合計評価額: ${document.getElementById('outValTotal').textContent}円
+積算比率: ${document.getElementById('outValRatio').textContent}
 `;
       
       if (navigator.clipboard) {
