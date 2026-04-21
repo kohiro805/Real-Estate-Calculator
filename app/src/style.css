@@ -169,8 +169,13 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 12px;
-  margin-bottom: 12px;
   backdrop-filter: blur(16px);
+}
+
+.loan-panel, .revenue-container, .valuation-left, .valuation-right, .valuation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .revenue-group-title, .loan-section-title {
@@ -340,7 +345,6 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 12px;
-  margin-bottom: 12px;
 }
 
 .auto-calc-panel {
@@ -353,7 +357,6 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 12px;
-  margin-bottom: 24px;
 }
 
 .main-metrics {
