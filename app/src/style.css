@@ -366,6 +366,7 @@ section {
 .metric-card.main-highlight {
   background: rgba(255, 255, 255, 0.05);
   padding: 10px;
+  height: 46px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -388,6 +389,7 @@ section {
 
 .sub-metrics-grid .metric-card {
   padding: 10px;
+  height: 46px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
