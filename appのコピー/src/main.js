@@ -187,6 +187,7 @@
         period: { amt: loanInputs.periodLoanAmount.value, rate: loanInputs.periodInterestRate.value, monthly: loanInputs.periodMonthlyPayment.value }
       },
       revenueInputs: {
+        propName: revenueInputs.propName ? revenueInputs.propName.value : '',
         propPrice: revenueInputs.propPrice.value,
         propDownPayment: revenueInputs.propDownPayment.value,
         propInterest: revenueInputs.propInterest.value,
@@ -197,6 +198,7 @@
         propExpectedYield: revenueInputs.propExpectedYield.value
       },
       valuationInputs: {
+        valPropNameExport: document.getElementById('valPropNameExport') ? document.getElementById('valPropNameExport').value : '',
         valPropPrice: valuationInputs.valPropPrice.value,
         valRoadsideValue: valuationInputs.valRoadsideValue.value,
         valLandArea: valuationInputs.valLandArea.value,
@@ -338,6 +340,7 @@
     periodMonthlyPayment: document.getElementById('periodMonthlyPayment'),
   };
   const revenueInputs = {
+    propName: document.getElementById('propName'),
     propPrice: document.getElementById('propPrice'),
     propDownPayment: document.getElementById('propDownPayment'),
     propInterest: document.getElementById('propInterest'),
@@ -348,6 +351,7 @@
     propExpectedYield: document.getElementById('propExpectedYield')
   };
   const valuationInputs = {
+    valPropNameExport: document.getElementById('valPropNameExport'),
     valPropPrice: document.getElementById('valPropPrice'),
     valRoadsideValue: document.getElementById('valRoadsideValue'),
     valLandArea: document.getElementById('valLandArea'),
@@ -519,6 +523,96 @@
     updateAllOutputs();
     saveState();
   }));
+
+  const exportRevenueBtn = document.getElementById('exportRevenueBtn');
+  if (exportRevenueBtn) {
+    exportRevenueBtn.addEventListener('click', () => {
+      const name = revenueInputs.propName ? revenueInputs.propName.value : '';
+      
+      const text = `【収益シミュレーション結果】
+物件名: ${name || '未入力'}
+
+■ 取得条件
+取得価格: ${Number(revenueInputs.propPrice.value).toLocaleString() || 0}円
+自己資金: ${Number(revenueInputs.propDownPayment.value).toLocaleString() || 0}円
+借入金額: ${document.getElementById('outPropLoanAmount').textContent}円
+借入金利: ${revenueInputs.propInterest.value || 0}%
+借入期間: ${revenueInputs.propTerm.value || 0}年
+
+■ 運営条件
+満室年次賃料: ${Number(revenueInputs.propAnnualRentFull.value).toLocaleString() || 0}円
+想定稼働率: ${revenueInputs.propOccupancy.value || 0}%
+運営費率: ${revenueInputs.propExpRatio.value || 0}%
+売却利回り: ${revenueInputs.propExpectedYield.value || 0}%
+
+■ 収益指標
+年次キャッシュフロー: ${document.getElementById('outCF').textContent}円
+月次キャッシュフロー: ${document.getElementById('outMonthlyCF').textContent}円
+想定売却益: ${document.getElementById('outPropSaleProfit').textContent}円
+表面利回り: ${document.getElementById('outGrossYield').textContent}
+実質利回り: ${document.getElementById('outNOIYield').textContent}
+イールドギャップ: ${document.getElementById('outYieldGap').textContent}
+債務回収比率(DSCR): ${document.getElementById('outDSCR').textContent}
+返済比率: ${document.getElementById('outDSR').textContent}
+借入金比率: ${document.getElementById('outKPercent').textContent}
+自己資本利益率(ROE): ${document.getElementById('outROE').textContent}
+投資利益率(ROI): ${document.getElementById('outROI').textContent}
+`;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('結果をクリップボードにコピーしました！');
+        }).catch(() => {
+          alert('コピーに失敗しました。\n\n' + text);
+        });
+      } else {
+        alert('結果:\n' + text);
+      }
+    });
+  }
+
+  const exportValuationBtn = document.getElementById('exportValuationBtn');
+  if (exportValuationBtn) {
+    exportValuationBtn.addEventListener('click', () => {
+      const name = valuationInputs.valPropNameExport ? valuationInputs.valPropNameExport.value : '';
+      const structText = valuationInputs.valStructure.options ? valuationInputs.valStructure.options[valuationInputs.valStructure.selectedIndex].text : valuationInputs.valStructure.value;
+      const landCorrEl = document.getElementById('valLandCorrection');
+      const landCorr = landCorrEl && landCorrEl.value ? landCorrEl.value : '100';
+      
+      const text = `【積算シミュレーション結果】
+物件名: ${name || '未入力'}
+
+■ 物件概況
+物件価格: ${Number(valuationInputs.valPropPrice.value).toLocaleString() || 0}円
+
+■ 土地情報
+相続税路線価: ${Number(valuationInputs.valRoadsideValue.value).toLocaleString() || 0}円
+土地面積: ${valuationInputs.valLandArea.value || 0}㎡
+地形補正率: ${landCorr}%
+
+■ 建物情報
+建物構造: ${structText}
+延べ床面積: ${valuationInputs.valFloorArea.value || 0}㎡
+築年数: ${valuationInputs.valBuildingAge.value || 0}年
+
+■ 評価結果
+土地評価額: ${document.getElementById('outValLand').textContent}円
+建物評価額: ${document.getElementById('outValBuilding').textContent}円
+合計評価額: ${document.getElementById('outValTotal').textContent}円
+積算比率: ${document.getElementById('outValRatio').textContent}
+`;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('結果をクリップボードにコピーしました！');
+        }).catch(() => {
+          alert('コピーに失敗しました。\n\n' + text);
+        });
+      } else {
+        alert('結果:\n' + text);
+      }
+    });
+  }
 
   loadState();
 })();

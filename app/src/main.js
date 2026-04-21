@@ -559,14 +559,19 @@
 投資利益率(ROI): ${document.getElementById('outROI').textContent}
 `;
       
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          alert('結果をクリップボードにコピーしました！');
-        }).catch(() => {
-          alert('コピーに失敗しました。\n\n' + text);
-        });
-      } else {
-        alert('結果:\n' + text);
+      try {
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const filenameLabel = name ? `${name}_` : '';
+        a.download = `${filenameLabel}収益シミュレーション結果.txt`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (err) {
+        alert('ファイルの保存に失敗しました。\n\n結果:\n' + text);
       }
     });
   }
@@ -602,14 +607,19 @@
 積算比率: ${document.getElementById('outValRatio').textContent}
 `;
       
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          alert('結果をクリップボードにコピーしました！');
-        }).catch(() => {
-          alert('コピーに失敗しました。\n\n' + text);
-        });
-      } else {
-        alert('結果:\n' + text);
+      try {
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const filenameLabel = name ? `${name}_` : '';
+        a.download = `${filenameLabel}積算シミュレーション結果.txt`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (err) {
+        alert('ファイルの保存に失敗しました。\n\n結果:\n' + text);
       }
     });
   }

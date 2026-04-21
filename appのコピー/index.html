@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>不動産電卓</title>
   <link rel="stylesheet" href="src/style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon192.png" />
+  <link rel="manifest" href="manifest.json?v=5" />
+  <link rel="apple-touch-icon" href="icons/不動産電卓-iOS-Dark-1024x1024@1x.png?v=5" />
 </head>
 
 <body data-mode="normal" data-loan-submode="payment">
@@ -187,6 +187,17 @@
             <div class="detail-row"><span>想定売却額</span><span id="outPropSalePrice">-</span></div>
           </div>
         </div>
+
+        <!-- エクスポートエリア -->
+        <div class="revenue-group">
+          <div class="revenue-group-title" style="margin-bottom: 10px;">収益結果のエクスポート</div>
+          <div style="display: flex; gap: 10px; align-items: stretch; height: 42px;">
+            <input type="text" id="propName" placeholder="物件名 (例: 〇〇アパート)" style="flex: 1; min-width: 0; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); color: #ffffff; font-size: 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); outline: none; margin: 0;" />
+            <button id="exportRevenueBtn" style="flex-shrink: 0; padding: 0 16px; font-size: 14px; font-weight: 500; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.1); color: #ffffff; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: background 0.2s;">
+              エクスポート
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -263,6 +274,17 @@
                 <strong id="outValRatio">-</strong>
               </div>
             </div>
+          </div>
+        </div>
+        
+        <!-- エクスポートエリア -->
+        <div class="revenue-group">
+          <div class="revenue-group-title" style="margin-bottom: 10px;">積算結果のエクスポート</div>
+          <div style="display: flex; gap: 10px; align-items: stretch; height: 42px;">
+            <input type="text" id="valPropNameExport" placeholder="物件名 (例: 〇〇アパート)" style="flex: 1; min-width: 0; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); color: #ffffff; font-size: 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); outline: none; margin: 0;" />
+            <button id="exportValuationBtn" style="flex-shrink: 0; padding: 0 16px; font-size: 14px; font-weight: 500; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.1); color: #ffffff; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: background 0.2s;">
+              エクスポート
+            </button>
           </div>
         </div>
       </div>
