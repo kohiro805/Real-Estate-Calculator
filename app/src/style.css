@@ -226,7 +226,7 @@ section {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
   margin-top: 12px;
   backdrop-filter: blur(16px);
 }
@@ -263,24 +263,26 @@ section {
 }
 
 .val-metric {
-  padding: 16px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .val-metric .label {
   font-size: 13px;
   color: var(--text-secondary);
-  display: block;
-  margin-bottom: 4px;
 }
 
 .val-metric strong {
   font-size: 20px;
   color: var(--text-primary);
   font-weight: 600;
-  display: block;
+  line-height: 1;
 }
 
 /* Revenue Specific */
