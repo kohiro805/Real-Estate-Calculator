@@ -512,7 +512,7 @@
   document.querySelectorAll('.loan-tab').forEach(btn => btn.addEventListener('click', () => setLoanSubmode(btn.dataset.loanTab)));
   document.querySelectorAll('.valuation-tab').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('.valuation-tab').forEach(b => b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.valuation-section').forEach(s => s.style.display = s.dataset.valuationTabContent === btn.dataset.valuationTab ? 'block' : 'none');
+    document.querySelectorAll('.valuation-section').forEach(s => s.style.display = s.dataset.valuationTabContent === btn.dataset.valuationTab ? 'flex' : 'none');
   }));
 
   document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => {
