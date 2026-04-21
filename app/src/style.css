@@ -12,16 +12,7 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg-color: #f2f2f7;
-    --panel-bg: rgba(242, 242, 247, 0.7);
-    --glass-bg: rgba(0, 0, 0, 0.04);
-    --glass-border: rgba(0, 0, 0, 0.08);
-    --text-primary: #1c1c1e;
-    --text-secondary: #636366;
-  }
-}
+
 
 * {
   margin: 0;
@@ -567,4 +558,128 @@ section {
 .detail-row span:last-child {
   color: var(--text-primary);
   font-weight: 500;
+}
+
+/* ===== LIGHT MODE (Matched to Extension UI) ===== */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #ffffff;
+    --text-primary: #1c1c1e;
+    --text-secondary: #636366;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  /* Nav / Tab buttons */
+  .mode-btn,
+  .loan-tab,
+  .valuation-tab {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+  }
+
+  .mode-btn.active,
+  .loan-tab.active,
+  .valuation-tab.active {
+    background: rgba(0, 0, 0, 0.12);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  
+  .mode-toggle {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  
+  .sub-tabs-container {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  header {
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  /* Inputs */
+  .loan-row input, 
+  .loan-row select,
+  input[type="text"],
+  input[type="number"] {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: var(--text-primary) !important;
+    box-shadow: none !important;
+  }
+
+  .loan-row input:focus, 
+  .loan-row select:focus,
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.30) !important;
+  }
+
+  /* Panels (Output & Groups) */
+  .loan-output,
+  .loan-section,
+  .revenue-group,
+  .revenue-results-v2,
+  .val-metric,
+  .metric-card,
+  .auto-calc-panel {
+    background: rgba(0, 0, 0, 0.03) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    box-shadow: none !important;
+  }
+  
+  /* Calculator Display */
+  .display {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+  }
+  .result {
+    color: var(--text-primary);
+  }
+  .expression {
+    color: var(--text-secondary);
+  }
+
+  /* Calculator buttons */
+  .btn {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  .btn:active {
+    background: rgba(0, 0, 0, 0.08);
+  }
+  .btn[data-action="clear"],
+  .btn[data-action="delete"],
+  .btn[data-action="percent"],
+  .btn[data-action="toggle-sign"] {
+    background: rgba(0, 0, 0, 0.08);
+  }
+  .btn[data-value="/"],
+  .btn[data-value="*"],
+  .btn[data-value="-"],
+  .btn[data-value="+"],
+  .btn[data-action="equals"] {
+    background: rgba(255, 149, 0, 0.15);
+    border-color: rgba(255, 149, 0, 0.25);
+    color: #ff9500;
+  }
+  
+  /* Export buttons */
+  button[id^="export"] {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: var(--text-primary) !important;
+    box-shadow: none !important;
+  }
 }
