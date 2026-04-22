@@ -257,12 +257,6 @@ section {
   gap: 12px;
 }
 
-@media (min-width: 600px) {
-  .valuation-container {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 .result-group {
   display: flex;
   flex-direction: column;
@@ -678,11 +672,31 @@ section {
     color: #ff9500;
   }
   
-  /* Export buttons */
   button[id^="export"] {
     background: rgba(0, 0, 0, 0.04) !important;
     border-color: rgba(0, 0, 0, 0.1) !important;
     color: var(--text-primary) !important;
     box-shadow: none !important;
+  }
+}
+
+/* Landscape adjustments for smaller vertical height */
+@media (orientation: landscape) and (max-height: 900px) {
+  .btn {
+    aspect-ratio: auto;
+    height: calc(12vh - 6px);
+    min-height: 44px;
+    border-radius: 100px;
+  }
+  .display {
+    min-height: 80px;
+  }
+  .result {
+    font-size: 48px;
+    height: 52px;
+  }
+  .expression {
+    font-size: 32px;
+    height: 40px;
   }
 }
