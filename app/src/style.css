@@ -703,12 +703,12 @@ section {
   
   .result {
     font-size: clamp(28px, 10vh, 64px);
-    height: 64px;
+    height: auto;
   }
   
   .expression {
-    font-size: clamp(16px, 5vh, 28px);
-    height: 28px;
+    font-size: clamp(16px, 5vh, 48px);
+    height: auto;
   }
   
   .buttons {
