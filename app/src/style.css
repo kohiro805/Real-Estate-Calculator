@@ -19,6 +19,7 @@
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* 連打（ダブルタップ）によるズームを無効化 */
 }
 
 body {
