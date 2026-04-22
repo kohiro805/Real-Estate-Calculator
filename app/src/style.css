@@ -680,14 +680,14 @@ section {
   }
 }
 
-/* Landscape adjustments for smaller vertical height */
-@media (orientation: landscape) and (max-height: 900px) {
+/* Landscape adjustments for smaller vertical height and iPads */
+@media (orientation: landscape) {
   body[data-mode="normal"] {
     overflow: hidden; /* 電卓タブは横画面時にスクロールしないように完全固定 */
   }
 
   main {
-    max-width: 850px; 
+    max-width: 750px;  /* iPad等で横に広がりすぎないように調整 */
     padding-top: 8px;
     padding-bottom: 80px; /* フッターに合わせて余白を最小化 */
   }
@@ -706,7 +706,8 @@ section {
     margin: 0 auto;
     width: 100%;
     flex: 1;
-    min-height: 0; /* これにより子要素が高さ制限を認識して縮まる */
+    min-height: 0; 
+    justify-content: center; /* iPadなど縦に余白がある場合は中央寄せにする */
   }
   
   .display {
@@ -717,12 +718,12 @@ section {
   }
   
   .result {
-    font-size: clamp(28px, 12vh, 48px);
+    font-size: clamp(28px, 10vh, 48px);
     height: auto;
   }
   
   .expression {
-    font-size: clamp(16px, 6vh, 28px);
+    font-size: clamp(16px, 5vh, 28px);
     height: auto;
   }
   
@@ -732,14 +733,17 @@ section {
     flex: 1; /* 残りの高さをすべてボタン領域に割り当て */
     min-height: 0; 
     height: auto;
+    max-height: 380px; /* iPadの広い画面でも高さが大きくなりすぎないように制限 */
     gap: 8px; /* 小さい画面用に隙間を調整 */
+    margin: 0 auto; /* 中央寄せ */
+    width: 100%;
   }
 
   .btn {
     aspect-ratio: auto;
     height: 100%;
     border-radius: 100px; /* ピル型（横長丸） */
-    font-size: clamp(16px, 6vh, 26px);
+    font-size: clamp(16px, 5vh, 26px);
   }
 
   /* ボタンの配置順序 (orderで設定) */
