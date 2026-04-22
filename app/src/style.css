@@ -687,9 +687,15 @@ section {
   }
 
   main {
-    max-width: 750px;  /* iPad等で横に広がりすぎないように調整 */
+    max-width: 850px; /* 他のタブは広がりすぎないように制限 */
     padding-top: 8px;
     padding-bottom: 80px; /* フッターに合わせて余白を最小化 */
+  }
+
+  [data-mode="normal"] main {
+    max-width: 100%; /* 電卓タブの時は画面横幅いっぱいにボタンを広げる */
+    padding-left: 32px;
+    padding-right: 32px;
   }
 
   /* 下部ナビゲーションバーをスリム化して縦のスペースを確保 */
