@@ -704,11 +704,13 @@ section {
   .result {
     font-size: clamp(28px, 10vh, 48px);
     height: auto;
+    min-height: 48px;
   }
   
   .expression {
     font-size: clamp(16px, 5vh, 28px);
     height: auto;
+    min-height: 28px;
   }
   
   .buttons {
