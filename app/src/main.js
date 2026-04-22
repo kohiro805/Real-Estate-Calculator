@@ -204,7 +204,14 @@
         valLandArea: valuationInputs.valLandArea.value,
         valStructure: valuationInputs.valStructure.value,
         valFloorArea: valuationInputs.valFloorArea.value,
-        valBuildingAge: valuationInputs.valBuildingAge.value
+        valBuildingAge: valuationInputs.valBuildingAge.value,
+        settingsLifeWood: document.getElementById('settingsLifeWood') ? document.getElementById('settingsLifeWood').value : '',
+        settingsPriceWood: document.getElementById('settingsPriceWood') ? document.getElementById('settingsPriceWood').value : '',
+        settingsLifeSteel: document.getElementById('settingsLifeSteel') ? document.getElementById('settingsLifeSteel').value : '',
+        settingsPriceSteel: document.getElementById('settingsPriceSteel') ? document.getElementById('settingsPriceSteel').value : '',
+        settingsLifeRC: document.getElementById('settingsLifeRC') ? document.getElementById('settingsLifeRC').value : '',
+        settingsPriceRC: document.getElementById('settingsPriceRC') ? document.getElementById('settingsPriceRC').value : '',
+        revenueExpRate: document.getElementById('revenueSettingsExpRate') ? document.getElementById('revenueSettingsExpRate').value : '8'
       }
     };
     localStorage.setItem('calculatorState', JSON.stringify(state));
@@ -247,7 +254,13 @@
       Object.keys(state.revenueInputs).forEach(k => { if(revenueInputs[k]) revenueInputs[k].value = state.revenueInputs[k]; });
     }
     if (state.valuationInputs) {
-      Object.keys(state.valuationInputs).forEach(k => { if(valuationInputs[k]) valuationInputs[k].value = state.valuationInputs[k]; });
+      Object.keys(state.valuationInputs).forEach(k => { 
+        if(valuationInputs[k]) valuationInputs[k].value = state.valuationInputs[k]; 
+        else if (document.getElementById(k)) document.getElementById(k).value = state.valuationInputs[k];
+      });
+      if (state.valuationInputs.revenueExpRate && document.getElementById('revenueSettingsExpRate')) {
+         document.getElementById('revenueSettingsExpRate').value = state.valuationInputs.revenueExpRate;
+      }
     }
     if (state.modes) {
       if (state.modes.view) setMode(state.modes.view);
@@ -391,7 +404,9 @@
     const expRatio = toNumber(revenueInputs.propExpRatio.value) / 100;
 
     // 1. 取得コストの計算
-    const purchaseExpenses = price * 0.08;
+    const expRateStr = document.getElementById('revenueSettingsExpRate') ? document.getElementById('revenueSettingsExpRate').value : '8';
+    const purchaseExpensesRate = toNumber(expRateStr) / 100;
+    const purchaseExpenses = price * purchaseExpensesRate;
     const totalCost = price + purchaseExpenses;
     const loanAmt = Math.max(0, price - down);
     const monthlyPay = calcMonthlyPayment(loanAmt, rate, term);
@@ -519,6 +534,21 @@
     toggleSettingsBtn.addEventListener('click', () => {
       const section = document.getElementById('valuationSettingsSection');
       const textSpan = document.getElementById('valuationSettingsBtnText');
+      if (section.style.display === 'none') {
+        section.style.display = 'flex';
+        if (textSpan) textSpan.textContent = '閉じる';
+      } else {
+        section.style.display = 'none';
+        if (textSpan) textSpan.textContent = '設定';
+      }
+    });
+  }
+
+  const toggleRevenueSettingsBtn = document.getElementById('toggleRevenueSettingsBtn');
+  if (toggleRevenueSettingsBtn) {
+    toggleRevenueSettingsBtn.addEventListener('click', () => {
+      const section = document.getElementById('revenueSettingsSection');
+      const textSpan = document.getElementById('revenueSettingsBtnText');
       if (section.style.display === 'none') {
         section.style.display = 'flex';
         if (textSpan) textSpan.textContent = '閉じる';
