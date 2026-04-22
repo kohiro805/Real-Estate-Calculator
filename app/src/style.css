@@ -682,21 +682,27 @@ section {
 
 /* Landscape adjustments for smaller vertical height */
 @media (orientation: landscape) and (max-height: 900px) {
-  .btn {
-    aspect-ratio: auto;
-    height: calc(12vh - 6px);
-    min-height: 44px;
-    border-radius: 100px;
+  .calculator {
+    max-width: 55vh; /* 画面の高さに応じて幅を制限し、全体を縮小 */
+    margin: 0 auto;
+    width: 100%;
   }
   .display {
     min-height: 80px;
+    padding: 8px 12px;
   }
   .result {
-    font-size: 48px;
-    height: 52px;
+    font-size: clamp(32px, 8vh, 48px);
+    height: auto;
   }
   .expression {
-    font-size: 32px;
-    height: 40px;
+    font-size: clamp(20px, 4vh, 32px);
+    height: auto;
+  }
+  .buttons {
+    gap: 8px; /* ボタン同士の隙間を少し詰める */
+  }
+  .btn {
+    font-size: clamp(14px, 4vh, 24px); /* ボタンの文字サイズも高さに合わせて可変に */
   }
 }
