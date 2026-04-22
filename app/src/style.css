@@ -695,15 +695,15 @@ section {
   }
   
   .display {
-    height: 84px;
-    flex: 0 0 84px;
+    height: 100px;
+    flex: 0 0 100px;
     padding: 4px 12px;
     margin-bottom: 4px;
   }
   
   .result {
-    font-size: clamp(28px, 10vh, 48px);
-    height: 48px;
+    font-size: clamp(28px, 10vh, 64px);
+    height: 64px;
   }
   
   .expression {
