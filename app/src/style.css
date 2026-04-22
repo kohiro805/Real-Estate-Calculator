@@ -735,13 +735,13 @@ section {
   .btn[data-value="7"] { order: 1; }
   .btn[data-value="8"] { order: 2; }
   .btn[data-value="9"] { order: 3; }
-  .btn[data-action="delete"] { order: 4; }
+  .btn[data-action="clear"] { order: 4; }
   .btn[data-value="/"] { order: 5; }
   /* 行2 */
   .btn[data-value="4"] { order: 6; }
   .btn[data-value="5"] { order: 7; }
   .btn[data-value="6"] { order: 8; }
-  .btn[data-action="clear"] { order: 9; }
+  .btn[data-action="delete"] { order: 9; }
   .btn[data-value="*"] { order: 10; }
   /* 行3 */
   .btn[data-value="1"] { order: 11; }
