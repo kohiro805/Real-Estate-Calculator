@@ -514,10 +514,19 @@
 
   modeButtons.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
   document.querySelectorAll('.loan-tab').forEach(btn => btn.addEventListener('click', () => setLoanSubmode(btn.dataset.loanTab)));
-  document.querySelectorAll('.valuation-tab').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('.valuation-tab').forEach(b => b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.valuation-section').forEach(s => s.style.display = s.dataset.valuationTabContent === btn.dataset.valuationTab ? 'flex' : 'none');
-  }));
+  const toggleSettingsBtn = document.getElementById('toggleValuationSettingsBtn');
+  if (toggleSettingsBtn) {
+    toggleSettingsBtn.addEventListener('click', () => {
+      const section = document.getElementById('valuationSettingsSection');
+      if (section.style.display === 'none') {
+        section.style.display = 'block';
+        toggleSettingsBtn.textContent = '⚙ 基本情報設定を閉じる';
+      } else {
+        section.style.display = 'none';
+        toggleSettingsBtn.textContent = '⚙ 基本情報設定を変更する';
+      }
+    });
+  }
 
   document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => {
     updateAllOutputs();
