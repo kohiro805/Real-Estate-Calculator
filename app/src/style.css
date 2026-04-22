@@ -93,9 +93,6 @@ main {
   width: 100%;
 }
 
-[data-mode="valuation"] main {
-  padding-bottom: 180px;
-}
 
 /* Panels Visibility */
 [data-mode="normal"] section:not(.calculator),
