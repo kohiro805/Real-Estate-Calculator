@@ -707,7 +707,7 @@ section {
     width: 100%;
     flex: 1;
     min-height: 0; 
-    justify-content: center; /* iPadなど縦に余白がある場合は中央寄せにする */
+    justify-content: flex-end; /* 縦の余白がある場合は下寄せにして、ボタンを指に近づける */
   }
   
   .display {
