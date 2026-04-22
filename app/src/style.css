@@ -682,38 +682,64 @@ section {
 
 /* Landscape adjustments for smaller vertical height */
 @media (orientation: landscape) and (max-height: 900px) {
-  main {
-    max-width: 850px; /* 電卓が5列になるため、コンテナの最大幅を広げる */
+  body[data-mode="normal"] {
+    overflow: hidden; /* 電卓タブは横画面時にスクロールしないように完全固定 */
   }
+
+  main {
+    max-width: 850px; 
+    padding-top: 8px;
+    padding-bottom: 80px; /* フッターに合わせて余白を最小化 */
+  }
+
+  /* 下部ナビゲーションバーをスリム化して縦のスペースを確保 */
+  .mode-toggle {
+    padding: 8px 10px;
+  }
+  .mode-btn {
+    padding: 8px 4px;
+    font-size: 13px;
+  }
+
   .calculator {
     max-width: 100%;
     margin: 0 auto;
     width: 100%;
+    flex: 1;
+    min-height: 0; /* これにより子要素が高さ制限を認識して縮まる */
   }
+  
   .display {
-    min-height: 80px;
-    padding: 8px 12px;
+    min-height: 60px;
+    flex: 0 1 auto;
+    padding: 4px 12px;
     margin-bottom: 4px;
   }
+  
   .result {
-    font-size: clamp(32px, 8vh, 56px);
+    font-size: clamp(28px, 12vh, 48px);
     height: auto;
   }
+  
   .expression {
-    font-size: clamp(20px, 4vh, 32px);
+    font-size: clamp(16px, 6vh, 28px);
     height: auto;
   }
+  
   .buttons {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    height: 55vh; /* ボタン部分が画面高さの55%におさまるようにする */
-    gap: 12px;
+    flex: 1; /* 残りの高さをすべてボタン領域に割り当て */
+    min-height: 0; 
+    height: auto;
+    gap: 8px; /* 小さい画面用に隙間を調整 */
   }
+
   .btn {
     aspect-ratio: auto;
     height: 100%;
     border-radius: 100px; /* ピル型（横長丸） */
-    font-size: clamp(18px, 4.5vh, 28px);
+    font-size: clamp(16px, 6vh, 26px);
   }
 
   /* ボタンの配置順序 (orderで設定) */
