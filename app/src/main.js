@@ -518,12 +518,13 @@
   if (toggleSettingsBtn) {
     toggleSettingsBtn.addEventListener('click', () => {
       const section = document.getElementById('valuationSettingsSection');
+      const textSpan = document.getElementById('valuationSettingsBtnText');
       if (section.style.display === 'none') {
         section.style.display = 'block';
-        toggleSettingsBtn.textContent = '⚙ 基本情報設定を閉じる';
+        if (textSpan) textSpan.textContent = '閉じる';
       } else {
         section.style.display = 'none';
-        toggleSettingsBtn.textContent = '⚙ 基本情報設定を変更する';
+        if (textSpan) textSpan.textContent = '設定';
       }
     });
   }
