@@ -682,17 +682,21 @@ section {
 
 /* Landscape adjustments for smaller vertical height */
 @media (orientation: landscape) and (max-height: 900px) {
+  main {
+    max-width: 850px; /* 電卓が5列になるため、コンテナの最大幅を広げる */
+  }
   .calculator {
-    max-width: 55vh; /* 画面の高さに応じて幅を制限し、全体を縮小 */
+    max-width: 100%;
     margin: 0 auto;
     width: 100%;
   }
   .display {
     min-height: 80px;
     padding: 8px 12px;
+    margin-bottom: 4px;
   }
   .result {
-    font-size: clamp(32px, 8vh, 48px);
+    font-size: clamp(32px, 8vh, 56px);
     height: auto;
   }
   .expression {
@@ -700,9 +704,41 @@ section {
     height: auto;
   }
   .buttons {
-    gap: 8px; /* ボタン同士の隙間を少し詰める */
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    height: 55vh; /* ボタン部分が画面高さの55%におさまるようにする */
+    gap: 12px;
   }
   .btn {
-    font-size: clamp(14px, 4vh, 24px); /* ボタンの文字サイズも高さに合わせて可変に */
+    aspect-ratio: auto;
+    height: 100%;
+    border-radius: 100px; /* ピル型（横長丸） */
+    font-size: clamp(18px, 4.5vh, 28px);
   }
+
+  /* ボタンの配置順序 (orderで設定) */
+  /* 行1 */
+  .btn[data-value="7"] { order: 1; }
+  .btn[data-value="8"] { order: 2; }
+  .btn[data-value="9"] { order: 3; }
+  .btn[data-action="delete"] { order: 4; }
+  .btn[data-value="/"] { order: 5; }
+  /* 行2 */
+  .btn[data-value="4"] { order: 6; }
+  .btn[data-value="5"] { order: 7; }
+  .btn[data-value="6"] { order: 8; }
+  .btn[data-action="clear"] { order: 9; }
+  .btn[data-value="*"] { order: 10; }
+  /* 行3 */
+  .btn[data-value="1"] { order: 11; }
+  .btn[data-value="2"] { order: 12; }
+  .btn[data-value="3"] { order: 13; }
+  .btn[data-action="percent"] { order: 14; }
+  .btn[data-value="-"] { order: 15; }
+  /* 行4 */
+  .btn[data-action="toggle-sign"] { order: 16; }
+  .btn[data-value="0"] { order: 17; }
+  .btn[data-value="."] { order: 18; }
+  .btn[data-action="equals"] { order: 19; }
+  .btn[data-value="+"] { order: 20; }
 }
