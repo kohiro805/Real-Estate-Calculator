@@ -299,7 +299,7 @@
           </button>
         </div>
 
-        <div id="valuationSettingsSection" style="display:none; margin-top: 10px;">
+        <div id="valuationSettingsSection" style="display:none; flex-direction: column; gap: 12px; margin-top: 10px;">
           <div class="revenue-group">
              <div class="revenue-group-title">木造 設定</div>
              <div class="loan-row"><label>耐用年数 (年)</label><input type="number" id="settingsLifeWood" value="22" /></div>
@@ -355,16 +355,6 @@
   </main>
 
   <header>
-    <div class="sub-tabs-container">
-      <!-- ローン用のサブタブ (統合されたため非表示、または削除) -->
-      <!-- <div class="loan-tabs" data-mode-only="loan">
-        <button class="loan-tab active" data-loan-tab="payment">返済額</button>
-        <button class="loan-tab" data-loan-tab="borrow">借入額</button>
-        <button class="loan-tab" data-loan-tab="period">期間</button>
-      </div> -->
-      <!-- 積算用のサブタブ (廃止) -->
-      <div class="valuation-tabs" data-mode-only="valuation" style="display:none;"></div>
-    </div>
     <div class="mode-toggle" aria-label="Mode switch">
       <button class="mode-btn active" data-mode="normal">電卓</button>
       <button class="mode-btn" data-mode="loan">ローン</button>

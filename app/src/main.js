@@ -520,7 +520,7 @@
       const section = document.getElementById('valuationSettingsSection');
       const textSpan = document.getElementById('valuationSettingsBtnText');
       if (section.style.display === 'none') {
-        section.style.display = 'block';
+        section.style.display = 'flex';
         if (textSpan) textSpan.textContent = '閉じる';
       } else {
         section.style.display = 'none';
