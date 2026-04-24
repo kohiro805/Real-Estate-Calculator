@@ -781,4 +781,45 @@ section {
   .btn[data-value="."] { order: 18; }
   .btn[data-action="equals"] { order: 19; }
   .btn[data-value="+"] { order: 20; }
+
+  /* スマホの横持ちなど、極端に縦が狭い場合の追加調整 */
+  @media (max-height: 500px) {
+    main {
+      padding-bottom: 60px;
+      padding-top: 4px;
+    }
+    [data-mode="normal"] main {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .display {
+      height: 70px;
+      flex: 0 0 70px;
+      min-height: 70px;
+      padding: 2px 12px;
+      margin-bottom: 4px;
+    }
+    .result {
+      font-size: clamp(24px, 12vh, 48px);
+      height: 48px;
+      line-height: 48px;
+    }
+    .expression {
+      font-size: clamp(14px, 6vh, 24px);
+      height: 20px;
+    }
+    .mode-toggle {
+      padding: 4px 6px;
+    }
+    .mode-btn {
+      padding: 6px 4px;
+      font-size: 12px;
+    }
+    .buttons {
+      gap: 6px;
+    }
+    .btn {
+      font-size: clamp(16px, 8vh, 24px);
+    }
+  }
 }
