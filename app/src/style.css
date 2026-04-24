@@ -27,6 +27,7 @@ body {
   background: var(--bg-color);
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -665,6 +666,21 @@ section {
     border-color: rgba(0, 0, 0, 0.1) !important;
     color: var(--text-primary) !important;
     box-shadow: none !important;
+  }
+}
+
+/* Android (Non-iOS) specific adjustments to prevent tab overlap */
+@supports not (-webkit-touch-callout: none) {
+  body[data-mode="normal"] .buttons {
+    gap: 8px;
+  }
+  body[data-mode="normal"] .display {
+    min-height: 100px;
+  }
+  @media (max-height: 700px) {
+    body[data-mode="normal"] main {
+      max-width: 400px;
+    }
   }
 }
 
