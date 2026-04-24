@@ -448,13 +448,21 @@ section {
   font-size: 64px;
   font-weight: 700;
   color: white;
-  word-break: break-all;
+  white-space: nowrap;
   height: 72px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   line-height: 1;
-  overflow: hidden; /* 結果表示はスクロールさせない */
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.result::before {
+  content: "";
+  margin-left: auto;
+}
+.result::-webkit-scrollbar {
+  display: none;
 }
 
 .buttons {

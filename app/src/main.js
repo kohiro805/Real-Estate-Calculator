@@ -101,6 +101,7 @@
     if (kIndicator) kIndicator.classList.toggle('active', !!constantOperator);
 
     if (expDiv) expDiv.scrollLeft = expDiv.scrollWidth;
+    if (resDiv) resDiv.scrollLeft = resDiv.scrollWidth;
   };
 
   const formatExpressionWithCommas = (expr) => {
