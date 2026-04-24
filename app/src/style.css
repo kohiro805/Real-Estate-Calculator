@@ -33,6 +33,10 @@ body {
   line-height: 1.5;
 }
 
+body[data-mode="normal"] {
+  overflow: hidden;
+}
+
 /* Header & Navigation */
 header {
   position: fixed;
