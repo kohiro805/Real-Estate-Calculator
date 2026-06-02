@@ -92,7 +92,7 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 120px;
+  padding: 72px 16px 120px; /* 上部に固定ヘッダー(56px)用の余白を追加 */
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
@@ -740,7 +740,7 @@ section {
 
   main {
     max-width: 850px; /* 他のタブは広がりすぎないように制限 */
-    padding-top: 8px;
+    padding-top: 64px; /* 固定ヘッダー(56px)用の余白を追加 */
     padding-bottom: 80px; /* フッターに合わせて余白を最小化 */
   }
 
@@ -811,6 +811,10 @@ section {
 
 /* ヘッダー全体のデザイン（フロストガラス効果） */
 #app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 56px;
   background: rgba(28, 28, 30, 0.95);
   backdrop-filter: blur(16px);
@@ -820,8 +824,7 @@ section {
   align-items: center;
   justify-content: center;
   padding: 0 12px;
-  position: relative;
-  z-index: 100;
+  z-index: 800; /* overlay(900)やdrawer(950)より前面に出ないようにしつつ固定 */
 }
 /* レイアウト幅を100%にし、相対位置の基準点にする */
 #header-left {
