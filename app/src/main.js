@@ -665,5 +665,35 @@
     });
   }
 
+  // ドロワーメニューの開閉制御ロジック
+  window.toggleDrawer = () => {
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    if (!drawer || !overlay) return;
+    const isOpen = drawer.classList.contains('open');
+    
+    if (isOpen) {
+      window.closeDrawer();
+    } else {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+    }
+  };
+
+  window.closeDrawer = () => {
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    
+    if (drawer) drawer.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  };
+
+  // ESCキーで閉じる
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      window.closeDrawer();
+    }
+  });
+
   loadState();
 })();

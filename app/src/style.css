@@ -39,7 +39,7 @@ body[data-mode="normal"] {
 }
 
 /* Header & Navigation */
-header {
+header:not(#app-header) {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -585,7 +585,7 @@ section {
     background: rgba(0, 0, 0, 0.02);
   }
   
-  header {
+  header:not(#app-header) {
     background: rgba(255, 255, 255, 0.95);
     border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
@@ -666,6 +666,54 @@ section {
     border-color: rgba(0, 0, 0, 0.1) !important;
     color: var(--text-primary) !important;
     box-shadow: none !important;
+  }
+
+  /* Mobile Header Light Mode */
+  #app-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  #hamburger-btn span {
+    background: var(--text-secondary);
+  }
+  #hamburger-btn:hover span {
+    background: var(--text-primary);
+  }
+  #header-logo {
+    color: var(--text-primary);
+  }
+
+  /* Mobile Drawer Light Mode */
+  #drawer {
+    background: rgba(255, 255, 255, 0.95);
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  #drawer-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  #drawer-title {
+    color: var(--text-primary);
+  }
+  #drawer-close {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-secondary);
+  }
+  #drawer-close:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+  }
+  .drawer-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+  .drawer-item:active {
+    background: rgba(0, 0, 0, 0.08);
+  }
+  .drawer-name {
+    color: var(--text-primary);
+  }
+  .drawer-desc, .drawer-arrow {
+    color: var(--text-secondary);
   }
 }
 
@@ -755,7 +803,188 @@ section {
     border-radius: 100px; /* ピル型（横長丸） */
     font-size: clamp(16px, 5vh, 26px);
   }
+}
 
+/* ==========================================
+   スマートフォン用モバイルヘッダー (プレミアム iOS 風)
+   ========================================== */
+
+/* ヘッダー全体のデザイン（フロストガラス効果） */
+#app-header {
+  height: 56px;
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  position: relative;
+  z-index: 100;
+}
+/* レイアウト幅を100%にし、相対位置の基準点にする */
+#header-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+/* ハンバーガーボタンを左端に絶対配置＆縦中央揃え */
+#hamburger-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 0;
+}
+/* CSSだけで作るスタイリッシュな三本線 */
+#hamburger-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #d0d0d0; /* 好みに応じてテキスト色を変更 */
+  border-radius: 2px;
+  transition: background 140ms ease;
+}
+#hamburger-btn:hover span {
+  background: #ffffff;
+}
+/* 中央のタイトル（不動産電卓） */
+#header-logo {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* ========== 2. ドロワーとオーバーレイのデザイン ========== */
+#drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 900;
+  animation: fadeIn 0.2s ease;
+}
+#drawer-overlay.open {
+  display: block;
+}
+#drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 340px;
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 950;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#drawer.open {
+  transform: translateX(0);
+}
+#drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  height: 60px;
+  flex-shrink: 0;
+}
+#drawer-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+#drawer-close {
+  width: 28px;
+  height: 28px;
+  background: rgba(160, 160, 160, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: #8e8e93;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 140ms ease;
+}
+#drawer-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+#drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  text-decoration: none;
+  transition: background 140ms ease;
+}
+.drawer-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.drawer-item:active {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.98);
+}
+.drawer-text {
+  flex: 1;
+  min-width: 0;
+}
+.drawer-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+.drawer-desc {
+  font-size: 0.7rem;
+  color: #8e8e93;
+}
+.drawer-arrow {
+  font-size: 0.75rem;
+  color: #8e8e93;
+  flex-shrink: 0;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (orientation: landscape) {
   /* ボタンの配置順序 (orderで設定) */
   /* 行1 */
   .btn[data-value="7"] { order: 1; }

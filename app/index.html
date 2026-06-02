@@ -14,6 +14,37 @@
 
 <body data-mode="normal" data-loan-submode="payment">
 
+  <!-- ドロワーオーバーレイ（背景を暗くしてぼかす） -->
+  <div id="drawer-overlay" onclick="closeDrawer()"></div>
+  <!-- 左ドロワー本体 -->
+  <nav id="drawer">
+    <div id="drawer-header">
+      <span id="drawer-title">メニュー</span>
+      <button id="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div id="drawer-body">
+      <a href="https://kohiro805.github.io/real-estate-area-map/index.html" target="_blank" rel="noopener" class="drawer-item">
+        <div class="drawer-text">
+          <div class="drawer-name">不動産マップ</div>
+          <div class="drawer-desc">エリア情報・GISマップ</div>
+        </div>
+        <span class="drawer-arrow">↗</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 画面上部ヘッダー -->
+  <header id="app-header">
+    <div id="header-left">
+      <!-- 左上固定のハンバーガーボタン -->
+      <button id="hamburger-btn" onclick="toggleDrawer()" aria-label="メニューを開く">
+        <span></span><span></span><span></span>
+      </button>
+      <!-- 絶対中央のタイトル -->
+      <div id="header-logo">不動産電卓</div>
+    </div>
+  </header>
+
   <main>
     <section class="loan-panel" aria-live="polite">
       <!-- 1. 返済額計算 -->
