@@ -1,0 +1,16 @@
+{
+  "name": "不動産電卓",
+  "short_name": "不動産電卓",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#1c1c1e",
+  "theme_color": "#1c1c1e",
+  "description": "不動産投資の収支計算を素早く行うための電卓アプリです。",
+  "icons": [
+    {
+      "src": "icons/不動産電卓-iOS-Dark-1024x1024@1x.png?v=5",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
