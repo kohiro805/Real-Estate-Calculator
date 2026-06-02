@@ -668,53 +668,6 @@ section {
     box-shadow: none !important;
   }
 
-  /* Mobile Header Light Mode */
-  #app-header {
-    background: rgba(255, 255, 255, 0.95);
-    border-bottom: none;
-  }
-  #hamburger-btn span {
-    background: var(--text-secondary);
-  }
-  #hamburger-btn:hover span {
-    background: var(--text-primary);
-  }
-  #header-logo {
-    color: var(--text-primary);
-  }
-
-  /* Mobile Drawer Light Mode */
-  #drawer {
-    background: rgba(255, 255, 255, 0.95);
-    border-right: 1px solid rgba(0, 0, 0, 0.08);
-  }
-  #drawer-header {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-  #drawer-title {
-    color: var(--text-primary);
-  }
-  #drawer-close {
-    background: rgba(0, 0, 0, 0.04);
-    border-color: rgba(0, 0, 0, 0.08);
-    color: var(--text-secondary);
-  }
-  #drawer-close:hover {
-    background: rgba(0, 0, 0, 0.08);
-    color: var(--text-primary);
-  }
-  .drawer-item:hover {
-    background: rgba(0, 0, 0, 0.04);
-  }
-  .drawer-item:active {
-    background: rgba(0, 0, 0, 0.08);
-  }
-  .drawer-name {
-    color: var(--text-primary);
-  }
-  .drawer-desc, .drawer-arrow {
-    color: var(--text-secondary);
-  }
 }
 
 /* Android (Non-iOS) specific adjustments to prevent tab overlap */
@@ -1013,4 +966,51 @@ section {
   .btn[data-value="."] { order: 18; }
   .btn[data-action="equals"] { order: 19; }
   .btn[data-value="+"] { order: 20; }
+}
+
+/* ===== ライトモード用のモバイルヘッダー・ドロワー上書き設定 ===== */
+@media (prefers-color-scheme: light) {
+  #app-header {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  #header-logo {
+    color: var(--text-primary);
+  }
+  #hamburger-btn span {
+    background: var(--text-secondary);
+  }
+  #hamburger-btn:hover span {
+    background: var(--text-primary);
+  }
+  #drawer {
+    background: rgba(255, 255, 255, 0.95);
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  #drawer-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  #drawer-title {
+    color: var(--text-primary);
+  }
+  #drawer-close {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-secondary);
+  }
+  #drawer-close:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+  }
+  .drawer-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+  .drawer-item:active {
+    background: rgba(0, 0, 0, 0.08);
+  }
+  .drawer-name {
+    color: var(--text-primary);
+  }
+  .drawer-desc, .drawer-arrow {
+    color: var(--text-secondary);
+  }
 }
