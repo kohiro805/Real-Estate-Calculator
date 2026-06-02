@@ -671,7 +671,7 @@ section {
   /* Mobile Header Light Mode */
   #app-header {
     background: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: none;
   }
   #hamburger-btn span {
     background: var(--text-secondary);
@@ -819,7 +819,7 @@ section {
   background: rgba(28, 28, 30, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: none;
   display: flex;
   align-items: center;
   justify-content: center;
