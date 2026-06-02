@@ -940,6 +940,17 @@ section {
   to { opacity: 1; }
 }
 
+.drawer-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 24px 20px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 8px;
+}
+
 @media (orientation: landscape) {
   /* ボタンの配置順序 (orderで設定) */
   /* 行1 */
@@ -1012,5 +1023,9 @@ section {
   }
   .drawer-desc, .drawer-arrow {
     color: var(--text-secondary);
+  }
+  .drawer-section-title {
+    color: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
 }

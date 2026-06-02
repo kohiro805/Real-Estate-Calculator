@@ -695,5 +695,11 @@
     }
   });
 
+  // ドロワー内のメニュークリックでタブを切り替えて閉じる
+  window.selectDrawerMode = (mode) => {
+    setMode(mode);
+    window.closeDrawer();
+  };
+
   loadState();
 })();

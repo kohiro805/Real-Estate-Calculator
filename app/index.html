@@ -23,6 +23,38 @@
       <button id="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
     <div id="drawer-body">
+      <!-- メインメニュー項目（アプリ内ショートカット） -->
+      <a href="#" class="drawer-item" onclick="selectDrawerMode('normal')">
+        <div class="drawer-text">
+          <div class="drawer-name">電卓</div>
+          <div class="drawer-desc">一般計算・定数計算</div>
+        </div>
+        <span class="drawer-arrow">→</span>
+      </a>
+      <a href="#" class="drawer-item" onclick="selectDrawerMode('loan')">
+        <div class="drawer-text">
+          <div class="drawer-name">ローン計算</div>
+          <div class="drawer-desc">返済額・借入可能額・期間</div>
+        </div>
+        <span class="drawer-arrow">→</span>
+      </a>
+      <a href="#" class="drawer-item" onclick="selectDrawerMode('revenue')">
+        <div class="drawer-text">
+          <div class="drawer-name">収益シミュレーション</div>
+          <div class="drawer-desc">キャッシュフロー・利回り</div>
+        </div>
+        <span class="drawer-arrow">→</span>
+      </a>
+      <a href="#" class="drawer-item" onclick="selectDrawerMode('valuation')">
+        <div class="drawer-text">
+          <div class="drawer-name">積算評価</div>
+          <div class="drawer-desc">土地路線価・建物評価</div>
+        </div>
+        <span class="drawer-arrow">→</span>
+      </a>
+
+      <!-- 「その他のアプリ」セクション -->
+      <div class="drawer-section-title">その他のアプリ</div>
       <a href="https://kohiro805.github.io/real-estate-area-map/index.html" target="_blank" rel="noopener" class="drawer-item">
         <div class="drawer-text">
           <div class="drawer-name">不動産マップ</div>
