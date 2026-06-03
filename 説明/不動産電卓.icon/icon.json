@@ -4,15 +4,13 @@
     {
       "layers" : [
         {
-          "blend-mode" : "normal",
-          "fill" : "none",
-          "image-name" : "不動産電卓アイコン.png",
-          "name" : "不動産電卓アイコン",
+          "image-name" : "Gemini_Generated_Image_ne5916ne5916ne59 (1).png",
+          "name" : "Gemini_Generated_Image_ne5916ne5916ne59 (1)",
           "position" : {
-            "scale" : 2.3,
+            "scale" : 0.35,
             "translation-in-points" : [
               0,
-              -13.936595561785225
+              0
             ]
           }
         }

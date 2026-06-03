@@ -174,6 +174,27 @@
     saveState();
   };
 
+  const replaceLastNumber = (fn) => {
+    const match = current.match(/(-?[\d,]*\.?\d+)(?!.*[\d,])/);
+    if (match && match.index !== undefined) {
+      const num = Number(match[1].replace(/,/g, ''));
+      const next = fn(num);
+      current = current.slice(0, match.index) + formatDisplayValue(next, 21);
+      return true;
+    }
+    const cleanCurrent = current.replace(/,/g, '');
+    if (!Number.isNaN(Number(cleanCurrent))) {
+      current = formatDisplayValue(fn(Number(cleanCurrent)), 21);
+      return true;
+    }
+    return false;
+  };
+
+  const toggleSign = () => {
+    replaceLastNumber((n) => -n);
+    saveState();
+  };
+
   const saveState = () => {
     const state = {
       calculator: { current, previousExpression, justEvaluated },
@@ -522,6 +543,7 @@
       const action = btn.dataset.action;
       if (action === 'clear') clearAll();
       else if (action === 'delete') backspace();
+      else if (action === 'toggle-sign') toggleSign();
       else if (action === 'equals') evaluate();
       else if (val) append(val);
       render();
