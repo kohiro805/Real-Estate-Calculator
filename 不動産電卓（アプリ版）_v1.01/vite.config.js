@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/Real-Estate-Calculator/',
+  base: '/real-estate-calculator-chrome/',
   root: './',
   build: {
     outDir: 'dist',
